@@ -61,12 +61,21 @@ const ParliamentVisualization = ({
     return partyColors[partyKey] || 'bg-muted hover:opacity-80';
   };
 
-  const getRowColor = (row: number) => {
-    // Generate distinct colors for each row using hue rotation
-    const hue = (row * 30) % 360; // 30 degrees apart for each row
-    const saturation = 60 + (row % 3) * 10; // Vary saturation slightly
-    const lightness = 45 + (row % 2) * 5; // Vary lightness slightly
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  const getPartyColorValue = (party: string) => {
+    const partyKey = party.toLowerCase().replace(/\s+/g, '-');
+    
+    const partyColorValues: { [key: string]: string } = {
+      'pheu-thai-party': 'hsl(0, 70%, 55%)',
+      'move-forward-party': 'hsl(20, 90%, 60%)',
+      'united-thai-nation-party': 'hsl(220, 70%, 45%)',
+      'democrat-party': 'hsl(200, 80%, 55%)',
+      'bhumjaithai-party': 'hsl(140, 60%, 50%)',
+      'palang-pracharath-party': 'hsl(190, 70%, 55%)',
+      'thai-sang-thai-party': 'hsl(280, 70%, 50%)',
+      'prachachat-party': 'hsl(35, 60%, 50%)',
+    };
+
+    return partyColorValues[partyKey] || 'hsl(240, 5%, 65%)';
   };
 
   const getVoteIcon = (vote: VoteType) => {
@@ -147,8 +156,8 @@ const ParliamentVisualization = ({
       ? calculateSemicirclePosition(index, sortedMPs.length)
       : { x: '0%', y: '0%', row: 0 };
 
-    const rowColor = layout === 'semicircle' ? getRowColor(position.row) : undefined;
     const partyColor = getPartyColor(mp.party);
+    const partyColorValue = getPartyColorValue(mp.party);
 
     return (
       <TooltipProvider key={mp.id}>
@@ -168,7 +177,7 @@ const ParliamentVisualization = ({
                 layout === 'semicircle' && 'absolute'
               )}
               style={layout === 'semicircle' 
-                ? { left: position.x, top: position.y, backgroundColor: rowColor } 
+                ? { left: position.x, top: position.y, backgroundColor: partyColorValue } 
                 : undefined
               }
             >
@@ -189,11 +198,6 @@ const ParliamentVisualization = ({
                   mp.vote === 'abstain' && 'text-abstain'
                 )}>{mp.vote}</span>
               </p>
-              {layout === 'semicircle' && (
-                <p className="text-sm text-muted-foreground mt-1">
-                  Row: {position.row + 1}
-                </p>
-              )}
             </div>
           </TooltipContent>
         </Tooltip>

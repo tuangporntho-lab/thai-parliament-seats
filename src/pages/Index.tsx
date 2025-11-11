@@ -6,6 +6,7 @@ import MPProfileSidebar from '@/components/MPProfileSidebar';
 import FilterControls from '@/components/FilterControls';
 import VotingSummary from '@/components/VotingSummary';
 import VoteBarChart from '@/components/VoteBarChart';
+import VoterSearch from '@/components/VoterSearch';
 import { Building2 } from 'lucide-react';
 
 const Index = () => {
@@ -15,6 +16,7 @@ const Index = () => {
   const [layout, setLayout] = useState<LayoutType>('semicircle');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<string>(mockSessions[0].id);
+  const [highlightedMP, setHighlightedMP] = useState<MP | null>(null);
 
   const currentSession = mockSessions.find(s => s.id === currentSessionId) || mockSessions[0];
   const currentMPs = useMemo(() => getVotingDataForSession(currentSessionId), [currentSessionId]);
@@ -54,15 +56,23 @@ const Index = () => {
 
         <VoteBarChart mps={currentMPs} orientation="horizontal" />
 
-        <FilterControls
-          parties={parties}
-          selectedParty={selectedParty}
-          selectedVote={selectedVote}
-          layout={layout}
-          onPartyChange={setSelectedParty}
-          onVoteChange={setSelectedVote}
-          onLayoutChange={setLayout}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <FilterControls
+            parties={parties}
+            selectedParty={selectedParty}
+            selectedVote={selectedVote}
+            layout={layout}
+            onPartyChange={setSelectedParty}
+            onVoteChange={setSelectedVote}
+            onLayoutChange={setLayout}
+          />
+          
+          <VoterSearch
+            mps={currentMPs}
+            selectedMP={highlightedMP}
+            onMPSelect={setHighlightedMP}
+          />
+        </div>
 
         <div className="bg-card rounded-lg border shadow-sm overflow-hidden">
           <ParliamentVisualization
@@ -71,6 +81,7 @@ const Index = () => {
             onMPClick={handleMPClick}
             filterParty={selectedParty}
             filterVote={selectedVote}
+            highlightedMPId={highlightedMP?.id}
           />
         </div>
 

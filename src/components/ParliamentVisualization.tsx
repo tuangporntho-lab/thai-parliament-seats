@@ -15,6 +15,7 @@ interface ParliamentVisualizationProps {
   onMPClick: (mp: MP) => void;
   filterParty?: string;
   filterVote?: VoteType | 'all';
+  highlightedMPId?: string | null;
 }
 
 const ParliamentVisualization = ({
@@ -23,6 +24,7 @@ const ParliamentVisualization = ({
   onMPClick,
   filterParty,
   filterVote,
+  highlightedMPId,
 }: ParliamentVisualizationProps) => {
   const [hoveredMP, setHoveredMP] = useState<string | null>(null);
 
@@ -116,6 +118,7 @@ const ParliamentVisualization = ({
 
   const renderSeat = (mp: MP, index: number) => {
     const isFiltered = filteredMPs.some((m) => m.id === mp.id);
+    const isHighlighted = highlightedMPId === mp.id;
     const position = layout === 'semicircle' 
       ? calculateSemicirclePosition(index, mps.length)
       : { x: '0%', y: '0%' };
@@ -132,8 +135,9 @@ const ParliamentVisualization = ({
                 'w-3.5 h-3.5 rounded-full transition-all duration-300 flex items-center justify-center',
                 'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1',
                 getVoteColor(mp.vote),
-                hoveredMP === mp.id && 'scale-[1.5] ring-2 ring-primary z-10',
-                !isFiltered && 'opacity-20',
+                (hoveredMP === mp.id || isHighlighted) && 'scale-[1.8] ring-4 ring-primary z-20 shadow-lg',
+                !isFiltered && !isHighlighted && 'opacity-20',
+                isHighlighted && 'animate-pulse',
                 layout === 'semicircle' && 'absolute'
               )}
               style={layout === 'semicircle' ? { left: position.x, top: position.y } : undefined}

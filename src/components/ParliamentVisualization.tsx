@@ -207,10 +207,10 @@ const ParliamentVisualization = ({
 
   return (
     <div className={cn(
-      'w-full h-full',
+      'w-full h-full min-h-0',
       layout === 'grid' 
-        ? 'grid gap-2 p-8 place-items-center' 
-        : 'relative flex items-center justify-center p-4'
+        ? 'grid gap-2 p-4 place-items-center' 
+        : 'relative flex items-center justify-center p-2'
     )}
     style={layout === 'grid' ? { gridTemplateColumns: 'repeat(25, minmax(0, 1fr))' } : undefined}
     >

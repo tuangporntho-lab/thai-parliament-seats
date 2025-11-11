@@ -100,8 +100,8 @@ const Index = () => {
             </div>
           </header>
 
-          <main className="flex-1 flex flex-col overflow-hidden">
-            <div className="flex-1 bg-card rounded-lg border shadow-sm m-4 overflow-hidden flex items-center justify-center">
+          <main className="flex-1 flex flex-col overflow-hidden h-[calc(100vh-5rem)]">
+            <div className="flex-1 bg-card rounded-lg border shadow-sm m-4 overflow-hidden flex items-center justify-center min-h-0">
               <ParliamentVisualization
                 mps={currentMPs}
                 layout={layout}

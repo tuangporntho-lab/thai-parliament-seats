@@ -18,16 +18,40 @@ const constituencies = [
 
 const votes: VoteType[] = ['agree', 'disagree', 'abstain'];
 
-// Generate 500 mock MPs
-export const mockMPs: MP[] = Array.from({ length: 500 }, (_, i) => ({
-  id: `mp-${i + 1}`,
-  name: `MP ${i + 1}`,
-  party: parties[i % parties.length],
-  constituency: constituencies[i % constituencies.length],
-  isProportional: i % 3 === 0,
-  vote: votes[Math.floor(Math.random() * votes.length)],
-  seatNumber: i + 1,
-}));
+// Define seat allocation for each party
+const seatAllocation = [
+  { party: 'Move Forward Party', seats: 140 },
+  { party: 'Pheu Thai Party', seats: 120 },
+  { party: 'United Thai Nation Party', seats: 40 },
+  { party: 'Democrat Party', seats: 40 },
+  { party: 'Bhumjaithai Party', seats: 40 },
+  { party: 'Palang Pracharath Party', seats: 40 },
+  { party: 'Thai Sang Thai Party', seats: 40 },
+  { party: 'Prachachat Party', seats: 40 },
+];
+
+// Generate 500 mock MPs with specific seat allocation
+export const mockMPs: MP[] = (() => {
+  const mps: MP[] = [];
+  let mpIndex = 1;
+  
+  seatAllocation.forEach(({ party, seats }) => {
+    for (let i = 0; i < seats; i++) {
+      mps.push({
+        id: `mp-${mpIndex}`,
+        name: `MP ${mpIndex}`,
+        party,
+        constituency: constituencies[mpIndex % constituencies.length],
+        isProportional: mpIndex % 3 === 0,
+        vote: votes[Math.floor(Math.random() * votes.length)],
+        seatNumber: mpIndex,
+      });
+      mpIndex++;
+    }
+  });
+  
+  return mps;
+})();
 
 export const mockSessions: VotingSession[] = [
   {

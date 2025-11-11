@@ -91,22 +91,22 @@ const ParliamentVisualization = ({
     const seatInRow = index - seatsBeforeRow;
     const totalInRow = seatsPerRowArray[currentRow];
     
-    // คำนวณรัศมีแต่ละแถว (เพิ่มระยะห่างระหว่างแถว)
-    const baseRadius = 12; // รัศมีแถวแรก (%)
-    const radiusIncrement = 7.5; // ระยะห่างระหว่างแถว (%) - เพิ่มขึ้น
+    // คำนวณรัศมีแต่ละแถว (ลดรัศมีลงเพื่อให้พอดีกับกรอบ)
+    const baseRadius = 10; // รัศมีแถวแรก (%) - ลดลง
+    const radiusIncrement = 6.8; // ระยะห่างระหว่างแถว (%)
     const radius = baseRadius + currentRow * radiusIncrement;
     
-    // มุมเริ่มต้นและมุมสิ้นสุด (ครึ่งวงกลม - เพิ่มเล็กน้อยเพื่อให้กว้างขึ้น)
-    const startAngle = Math.PI + 0.15; // มากกว่า 180 องศาเล็กน้อย
-    const endAngle = -0.15; // น้อยกว่า 0 องศาเล็กน้อย
+    // มุมเริ่มต้นและมุมสิ้นสุด (ครึ่งวงกลม - ลดมุมเพื่อไม่ให้จุดล้น)
+    const startAngle = Math.PI + 0.05; // ลดมุมเริ่มต้น
+    const endAngle = -0.05; // ลดมุมสิ้นสุด
     
     // คำนวณมุมของแต่ละที่นั่งในแถว
     const angleStep = (startAngle - endAngle) / (totalInRow > 1 ? totalInRow - 1 : 1);
     const angle = startAngle - angleStep * seatInRow;
     
-    // คำนวณตำแหน่ง x, y (ศูนย์กลางอยู่ที่ 50%, 90%)
+    // คำนวณตำแหน่ง x, y (ปรับศูนย์กลางให้อยู่ตรงกลาง)
     const centerX = 50;
-    const centerY = 92;
+    const centerY = 85; // ลดลงเพื่อไม่ให้จุดล้นด้านล่าง
     
     const x = centerX + Math.cos(angle) * radius;
     const y = centerY - Math.sin(angle) * radius;
@@ -167,7 +167,7 @@ const ParliamentVisualization = ({
       'w-full',
       layout === 'grid' 
         ? 'grid gap-2 p-8 place-items-center' 
-        : 'relative h-[750px] flex items-center justify-center'
+        : 'relative h-[650px] flex items-center justify-center overflow-hidden'
     )}
     style={layout === 'grid' ? { gridTemplateColumns: 'repeat(25, minmax(0, 1fr))' } : undefined}
     >

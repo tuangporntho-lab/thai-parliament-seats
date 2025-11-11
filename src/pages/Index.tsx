@@ -21,6 +21,7 @@ const Index = () => {
   const [currentSessionId, setCurrentSessionId] = useState<string>(mockSessions[0].id);
   const [highlightedMP, setHighlightedMP] = useState<MP | null>(null);
   const [voteFilterFromChart, setVoteFilterFromChart] = useState<string | null>(null);
+  const [zoom, setZoom] = useState(1);
 
   const currentSession = mockSessions.find(s => s.id === currentSessionId) || mockSessions[0];
   const currentMPs = useMemo(() => getVotingDataForSession(currentSessionId), [currentSessionId]);
@@ -74,6 +75,7 @@ const Index = () => {
           layout={layout}
           highlightedMP={highlightedMP}
           voteFilterFromChart={voteFilterFromChart}
+          zoom={zoom}
           onSessionChange={setCurrentSessionId}
           onPreviousSession={handlePreviousSession}
           onNextSession={handleNextSession}
@@ -84,6 +86,7 @@ const Index = () => {
           onLayoutChange={setLayout}
           onMPSelect={setHighlightedMP}
           onVoteFilterFromChart={handleVoteFilterFromChart}
+          onZoomChange={setZoom}
         />
 
         <div className="flex-1 flex flex-col">
@@ -109,6 +112,8 @@ const Index = () => {
                 filterParty={selectedParty}
                 filterVote={effectiveVoteFilter}
                 highlightedMPId={highlightedMP?.id}
+                zoom={zoom}
+                onZoomChange={setZoom}
               />
             </div>
 

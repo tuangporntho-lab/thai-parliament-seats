@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { MP, LayoutType, VoteType } from '@/types/parliament';
 import { cn } from '@/lib/utils';
 import {
@@ -16,6 +16,8 @@ interface ParliamentVisualizationProps {
   filterParty?: string;
   filterVote?: VoteType | 'all';
   highlightedMPId?: string | null;
+  zoom?: number;
+  onZoomChange?: (zoom: number) => void;
 }
 
 const ParliamentVisualization = ({
@@ -25,8 +27,29 @@ const ParliamentVisualization = ({
   filterParty,
   filterVote,
   highlightedMPId,
+  zoom = 1,
+  onZoomChange,
 }: ParliamentVisualizationProps) => {
   const [hoveredMP, setHoveredMP] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Handle mouse wheel zoom
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !onZoomChange) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const delta = -e.deltaY * 0.001;
+        const newZoom = Math.max(0.5, Math.min(3, zoom + delta));
+        onZoomChange(newZoom);
+      }
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    return () => container.removeEventListener('wheel', handleWheel);
+  }, [zoom, onZoomChange]);
 
   const filteredMPs = mps.filter((mp) => {
     const partyMatch = !filterParty || filterParty === 'all' || mp.party === filterParty;
@@ -126,9 +149,9 @@ const ParliamentVisualization = ({
     const seatInRow = index - seatsBeforeRow;
     const totalInRow = seatsPerRowArray[currentRow];
     
-    // คำนวณรัศมีแต่ละแถว (เพิ่มระยะห่างระหว่างแถว)
-    const baseRadius = 8; // รัศมีแถวแรก (%)
-    const radiusIncrement = 7.2; // ระยะห่างระหว่างแถว (%) - เพิ่มขึ้นเพื่อให้มีพื้นที่มากขึ้น
+    // คำนวณรัศมีแต่ละแถว (เพิ่มระยะห่างระหว่างแถว) * zoom
+    const baseRadius = 8 * zoom; // รัศมีแถวแรก (%)
+    const radiusIncrement = 7.2 * zoom; // ระยะห่างระหว่างแถว (%) - เพิ่มขึ้นเพื่อให้มีพื้นที่มากขึ้น
     const radius = baseRadius + currentRow * radiusIncrement;
     
     // มุมเริ่มต้นและมุมสิ้นสุด (เพิ่มมุมเพื่อให้จุดกระจายตัวมากขึ้นในแนวนอน)
@@ -168,7 +191,7 @@ const ParliamentVisualization = ({
               onMouseEnter={() => setHoveredMP(mp.id)}
               onMouseLeave={() => setHoveredMP(null)}
               className={cn(
-                'w-3.5 h-3.5 rounded-full transition-all duration-300 flex items-center justify-center',
+                'rounded-full transition-all duration-300 flex items-center justify-center',
                 'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1',
                 layout === 'grid' && partyColor,
                 (hoveredMP === mp.id || isHighlighted) && 'scale-[1.8] ring-4 ring-primary z-20 shadow-lg',
@@ -177,7 +200,14 @@ const ParliamentVisualization = ({
                 layout === 'semicircle' && 'absolute'
               )}
               style={layout === 'semicircle' 
-                ? { left: position.x, top: position.y, backgroundColor: partyColorValue } 
+                ? { 
+                    left: position.x, 
+                    top: position.y, 
+                    backgroundColor: partyColorValue,
+                    width: `${3.5 * zoom}px`,
+                    height: `${3.5 * zoom}px`,
+                    fontSize: `${2.5 * zoom}px`
+                  } 
                 : undefined
               }
             >
@@ -206,13 +236,16 @@ const ParliamentVisualization = ({
   };
 
   return (
-    <div className={cn(
-      'w-full h-full min-h-0',
-      layout === 'grid' 
-        ? 'grid gap-2 p-4 place-items-center' 
-        : 'relative flex items-center justify-center p-2'
-    )}
-    style={layout === 'grid' ? { gridTemplateColumns: 'repeat(25, minmax(0, 1fr))' } : undefined}
+    <div 
+      ref={containerRef}
+      className={cn(
+        'w-full h-full min-h-0',
+        layout === 'grid' 
+          ? 'grid gap-2 p-4 place-items-center' 
+          : 'relative flex items-center justify-center p-2 overflow-hidden cursor-move'
+      )}
+      style={layout === 'grid' ? { gridTemplateColumns: 'repeat(25, minmax(0, 1fr))' } : undefined}
+      title={layout === 'semicircle' ? 'Hold Ctrl/Cmd + Scroll to zoom' : undefined}
     >
       {sortedMPs.map((mp, index) => renderSeat(mp, index))}
     </div>

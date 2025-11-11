@@ -11,7 +11,7 @@ import VoteBarChart from '@/components/VoteBarChart';
 import PartyLegend from '@/components/PartyLegend';
 import FilterControls from '@/components/FilterControls';
 import VoterSearch from '@/components/VoterSearch';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import ZoomControls from '@/components/ZoomControls';
 
 interface AppSidebarProps {
   mps: MP[];
@@ -24,6 +24,7 @@ interface AppSidebarProps {
   layout: LayoutType;
   highlightedMP: MP | null;
   voteFilterFromChart: string | null;
+  zoom: number;
   onSessionChange: (sessionId: string) => void;
   onPreviousSession: () => void;
   onNextSession: () => void;
@@ -34,6 +35,7 @@ interface AppSidebarProps {
   onLayoutChange: (layout: LayoutType) => void;
   onMPSelect: (mp: MP | null) => void;
   onVoteFilterFromChart: (voteType: string | null) => void;
+  onZoomChange: (zoom: number) => void;
 }
 
 export function AppSidebar({
@@ -47,6 +49,7 @@ export function AppSidebar({
   layout,
   highlightedMP,
   voteFilterFromChart,
+  zoom,
   onSessionChange,
   onPreviousSession,
   onNextSession,
@@ -57,6 +60,7 @@ export function AppSidebar({
   onLayoutChange,
   onMPSelect,
   onVoteFilterFromChart,
+  onZoomChange,
 }: AppSidebarProps) {
   const { state } = useSidebar();
   const isCollapsed = state === 'collapsed';
@@ -96,6 +100,12 @@ export function AppSidebar({
                     onPartyChange={onPartyChange}
                     onVoteChange={onVoteChange}
                     onLayoutChange={onLayoutChange}
+                  />
+
+                  <ZoomControls
+                    zoom={zoom}
+                    onZoomChange={onZoomChange}
+                    onReset={() => onZoomChange(1)}
                   />
                   
                   <VoterSearch

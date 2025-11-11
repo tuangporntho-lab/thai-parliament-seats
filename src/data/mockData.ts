@@ -29,11 +29,45 @@ export const mockMPs: MP[] = Array.from({ length: 500 }, (_, i) => ({
   seatNumber: i + 1,
 }));
 
-export const mockSession: VotingSession = {
-  id: 'session-001',
-  billName: 'Budget Appropriations Act 2024',
-  date: '2024-03-15',
-  description: 'Fiscal year 2024 national budget allocation and appropriations',
+export const mockSessions: VotingSession[] = [
+  {
+    id: 'session-001',
+    billName: 'Budget Appropriations Act 2024',
+    date: '2024-03-15',
+    description: 'Fiscal year 2024 national budget allocation and appropriations',
+  },
+  {
+    id: 'session-002',
+    billName: 'Digital Economy Promotion Act',
+    date: '2024-03-10',
+    description: 'Legislation to promote digital transformation and e-commerce',
+  },
+  {
+    id: 'session-003',
+    billName: 'Environmental Protection Amendment',
+    date: '2024-03-05',
+    description: 'Amendments to strengthen environmental regulations and penalties',
+  },
+  {
+    id: 'session-004',
+    billName: 'Healthcare Reform Bill',
+    date: '2024-02-28',
+    description: 'Comprehensive healthcare system reform and universal coverage',
+  },
+  {
+    id: 'session-005',
+    billName: 'Education Modernization Act',
+    date: '2024-02-20',
+    description: 'Modernization of education curriculum and digital learning infrastructure',
+  },
+];
+
+// Generate voting data for each session
+export const getVotingDataForSession = (sessionId: string): MP[] => {
+  return mockMPs.map(mp => ({
+    ...mp,
+    vote: votes[Math.floor(Math.random() * votes.length)],
+  }));
 };
 
 export const generateMPHistory = (mpId: string): MPHistory => {

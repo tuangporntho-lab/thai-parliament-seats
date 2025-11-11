@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { mockMPs, mockSession, generateMPHistory } from '@/data/mockData';
-import { MP, LayoutType, VoteType } from '@/types/parliament';
+import { useState, useMemo } from 'react';
+import { mockMPs, mockSessions, generateMPHistory, getVotingDataForSession } from '@/data/mockData';
+import { MP, LayoutType, VoteType, VotingSession } from '@/types/parliament';
 import ParliamentVisualization from '@/components/ParliamentVisualization';
 import MPProfileSidebar from '@/components/MPProfileSidebar';
 import FilterControls from '@/components/FilterControls';
@@ -14,8 +14,12 @@ const Index = () => {
   const [selectedVote, setSelectedVote] = useState<VoteType | 'all'>('all');
   const [layout, setLayout] = useState<LayoutType>('semicircle');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentSessionId, setCurrentSessionId] = useState<string>(mockSessions[0].id);
 
-  const parties = Array.from(new Set(mockMPs.map((mp) => mp.party)));
+  const currentSession = mockSessions.find(s => s.id === currentSessionId) || mockSessions[0];
+  const currentMPs = useMemo(() => getVotingDataForSession(currentSessionId), [currentSessionId]);
+  
+  const parties = Array.from(new Set(currentMPs.map((mp) => mp.party)));
 
   const handleMPClick = (mp: MP) => {
     setSelectedMP(mp);
@@ -42,12 +46,13 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8 space-y-6">
         <VotingSummary 
-          mps={mockMPs} 
-          billName={mockSession.billName}
-          date={mockSession.date}
+          mps={currentMPs} 
+          sessions={mockSessions}
+          currentSession={currentSession}
+          onSessionChange={setCurrentSessionId}
         />
 
-        <VoteBarChart mps={mockMPs} orientation="horizontal" />
+        <VoteBarChart mps={currentMPs} orientation="horizontal" />
 
         <FilterControls
           parties={parties}
@@ -61,7 +66,7 @@ const Index = () => {
 
         <div className="bg-card rounded-lg border shadow-sm overflow-hidden">
           <ParliamentVisualization
-            mps={mockMPs}
+            mps={currentMPs}
             layout={layout}
             onMPClick={handleMPClick}
             filterParty={selectedParty}

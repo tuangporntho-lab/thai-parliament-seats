@@ -61,6 +61,14 @@ const ParliamentVisualization = ({
     return partyColors[partyKey] || 'bg-muted hover:opacity-80';
   };
 
+  const getRowColor = (row: number) => {
+    // Generate distinct colors for each row using hue rotation
+    const hue = (row * 30) % 360; // 30 degrees apart for each row
+    const saturation = 60 + (row % 3) * 10; // Vary saturation slightly
+    const lightness = 45 + (row % 2) * 5; // Vary lightness slightly
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  };
+
   const getVoteIcon = (vote: VoteType) => {
     switch (vote) {
       case 'agree':
@@ -129,7 +137,7 @@ const ParliamentVisualization = ({
     const x = centerX + Math.cos(angle) * radius;
     const y = centerY - Math.sin(angle) * radius;
     
-    return { x: `${x}%`, y: `${y}%` };
+    return { x: `${x}%`, y: `${y}%`, row: currentRow };
   };
 
   const renderSeat = (mp: MP, index: number) => {
@@ -137,7 +145,10 @@ const ParliamentVisualization = ({
     const isHighlighted = highlightedMPId === mp.id;
     const position = layout === 'semicircle' 
       ? calculateSemicirclePosition(index, sortedMPs.length)
-      : { x: '0%', y: '0%' };
+      : { x: '0%', y: '0%', row: 0 };
+
+    const rowColor = layout === 'semicircle' ? getRowColor(position.row) : undefined;
+    const partyColor = getPartyColor(mp.party);
 
     return (
       <TooltipProvider key={mp.id}>
@@ -150,13 +161,16 @@ const ParliamentVisualization = ({
               className={cn(
                 'w-3.5 h-3.5 rounded-full transition-all duration-300 flex items-center justify-center',
                 'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1',
-                getPartyColor(mp.party),
+                layout === 'grid' && partyColor,
                 (hoveredMP === mp.id || isHighlighted) && 'scale-[1.8] ring-4 ring-primary z-20 shadow-lg',
                 !isFiltered && !isHighlighted && 'opacity-20',
                 isHighlighted && 'animate-pulse',
                 layout === 'semicircle' && 'absolute'
               )}
-              style={layout === 'semicircle' ? { left: position.x, top: position.y } : undefined}
+              style={layout === 'semicircle' 
+                ? { left: position.x, top: position.y, backgroundColor: rowColor } 
+                : undefined
+              }
             >
               {getVoteIcon(mp.vote)}
             </button>
@@ -175,6 +189,11 @@ const ParliamentVisualization = ({
                   mp.vote === 'abstain' && 'text-abstain'
                 )}>{mp.vote}</span>
               </p>
+              {layout === 'semicircle' && (
+                <p className="text-sm text-muted-foreground mt-1">
+                  Row: {position.row + 1}
+                </p>
+              )}
             </div>
           </TooltipContent>
         </Tooltip>

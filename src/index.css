@@ -59,6 +59,15 @@ All colors MUST be HSL.
     --chart-4: 199 89% 48%;
     --chart-5: 262 83% 58%;
 
+    --party-pheu-thai: 0 84% 60%;
+    --party-move-forward: 42 87% 55%;
+    --party-united-thai: 221 83% 53%;
+    --party-democrat: 201 96% 32%;
+    --party-bhumjaithai: 142 76% 36%;
+    --party-palang-pracharath: 217 91% 60%;
+    --party-thai-sang-thai: 339 82% 52%;
+    --party-prachachat: 280 83% 58%;
+
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --shadow-soft: 0 2px 8px -2px hsl(222 47% 11% / 0.1);
     --shadow-medium: 0 4px 16px -4px hsl(222 47% 11% / 0.15);
@@ -113,6 +122,15 @@ All colors MUST be HSL.
     --chart-3: 0 84% 60%;
     --chart-4: 199 89% 48%;
     --chart-5: 262 83% 58%;
+
+    --party-pheu-thai: 0 72% 51%;
+    --party-move-forward: 42 87% 55%;
+    --party-united-thai: 221 83% 53%;
+    --party-democrat: 201 96% 32%;
+    --party-bhumjaithai: 142 76% 36%;
+    --party-palang-pracharath: 217 91% 60%;
+    --party-thai-sang-thai: 339 82% 52%;
+    --party-prachachat: 280 83% 58%;
   }
 }
 

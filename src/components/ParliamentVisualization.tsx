@@ -34,25 +34,31 @@ const ParliamentVisualization = ({
     return partyMatch && voteMatch;
   });
 
-  const getVoteColor = (vote: VoteType) => {
-    switch (vote) {
-      case 'agree':
-        return 'bg-success hover:bg-success/80';
-      case 'disagree':
-        return 'bg-destructive hover:bg-destructive/80';
-      case 'abstain':
-        return 'bg-abstain hover:bg-abstain/80';
-    }
+  const getPartyColor = (party: string) => {
+    const partyKey = party.toLowerCase().replace(/\s+/g, '-');
+    
+    const partyColors: { [key: string]: string } = {
+      'pheu-thai-party': 'bg-[hsl(var(--party-pheu-thai))] hover:opacity-80',
+      'move-forward-party': 'bg-[hsl(var(--party-move-forward))] hover:opacity-80',
+      'united-thai-nation-party': 'bg-[hsl(var(--party-united-thai))] hover:opacity-80',
+      'democrat-party': 'bg-[hsl(var(--party-democrat))] hover:opacity-80',
+      'bhumjaithai-party': 'bg-[hsl(var(--party-bhumjaithai))] hover:opacity-80',
+      'palang-pracharath-party': 'bg-[hsl(var(--party-palang-pracharath))] hover:opacity-80',
+      'thai-sang-thai-party': 'bg-[hsl(var(--party-thai-sang-thai))] hover:opacity-80',
+      'prachachat-party': 'bg-[hsl(var(--party-prachachat))] hover:opacity-80',
+    };
+
+    return partyColors[partyKey] || 'bg-muted hover:opacity-80';
   };
 
   const getVoteIcon = (vote: VoteType) => {
     switch (vote) {
       case 'agree':
-        return <Check className="w-2.5 h-2.5 text-success-foreground" />;
+        return <Check className="w-2.5 h-2.5 text-white" />;
       case 'disagree':
-        return <X className="w-2.5 h-2.5 text-destructive-foreground" />;
+        return <X className="w-2.5 h-2.5 text-white" />;
       case 'abstain':
-        return <Minus className="w-2.5 h-2.5 text-abstain-foreground" />;
+        return <Minus className="w-2.5 h-2.5 text-white" />;
     }
   };
 
@@ -134,7 +140,7 @@ const ParliamentVisualization = ({
               className={cn(
                 'w-3.5 h-3.5 rounded-full transition-all duration-300 flex items-center justify-center',
                 'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1',
-                getVoteColor(mp.vote),
+                getPartyColor(mp.party),
                 (hoveredMP === mp.id || isHighlighted) && 'scale-[1.8] ring-4 ring-primary z-20 shadow-lg',
                 !isFiltered && !isHighlighted && 'opacity-20',
                 isHighlighted && 'animate-pulse',

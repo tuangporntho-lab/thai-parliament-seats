@@ -72,6 +72,16 @@ export default {
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
         },
+        party: {
+          "pheu-thai": "hsl(var(--party-pheu-thai))",
+          "move-forward": "hsl(var(--party-move-forward))",
+          "united-thai": "hsl(var(--party-united-thai))",
+          "democrat": "hsl(var(--party-democrat))",
+          "bhumjaithai": "hsl(var(--party-bhumjaithai))",
+          "palang-pracharath": "hsl(var(--party-palang-pracharath))",
+          "thai-sang-thai": "hsl(var(--party-thai-sang-thai))",
+          "prachachat": "hsl(var(--party-prachachat))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

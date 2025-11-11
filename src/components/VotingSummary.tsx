@@ -65,6 +65,21 @@ const VotingSummary = ({
             <div className="flex-1">
               <h2 className="text-2xl font-bold">{currentSession.billName}</h2>
               <p className="text-muted-foreground mt-1">{currentSession.date}</p>
+              <div className="flex items-center gap-2 mt-2">
+                <span className="text-sm font-medium">มตินี้ผลโหวตเป็น:</span>
+                <span className={cn(
+                  "text-sm font-bold px-3 py-1 rounded-full",
+                  currentSession.result === 'passed' && "bg-success/20 text-success",
+                  currentSession.result === 'failed' && "bg-destructive/20 text-destructive",
+                  currentSession.result === 'pending' && "bg-warning/20 text-warning",
+                  currentSession.result === 'withdrawn' && "bg-muted text-muted-foreground"
+                )}>
+                  {currentSession.result === 'passed' && 'ผ่าน'}
+                  {currentSession.result === 'failed' && 'ไม่ผ่าน'}
+                  {currentSession.result === 'pending' && 'รอพิจารณา'}
+                  {currentSession.result === 'withdrawn' && 'ถอนมติ'}
+                </span>
+              </div>
               <p className="text-sm text-muted-foreground mt-2">{currentSession.description}</p>
             </div>
 

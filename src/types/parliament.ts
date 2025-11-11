@@ -10,11 +10,14 @@ export interface MP {
   seatNumber: number;
 }
 
+export type VotingResult = 'passed' | 'failed' | 'pending' | 'withdrawn';
+
 export interface VotingSession {
   id: string;
   billName: string;
   date: string;
   description: string;
+  result: VotingResult;
 }
 
 export interface MPHistory {

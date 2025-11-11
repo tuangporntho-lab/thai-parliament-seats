@@ -8,8 +8,11 @@ const mockSessions = [...rawMockSessions].sort((a, b) =>
 );
 import ParliamentVisualization from '@/components/ParliamentVisualization';
 import MPProfileSidebar from '@/components/MPProfileSidebar';
-import { AppSidebar } from '@/components/AppSidebar';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import FilterControls from '@/components/FilterControls';
+import VotingSummary from '@/components/VotingSummary';
+import VoteBarChart from '@/components/VoteBarChart';
+import VoterSearch from '@/components/VoterSearch';
+import PartyLegend from '@/components/PartyLegend';
 import { Building2 } from 'lucide-react';
 
 const Index = () => {
@@ -21,7 +24,6 @@ const Index = () => {
   const [currentSessionId, setCurrentSessionId] = useState<string>(mockSessions[0].id);
   const [highlightedMP, setHighlightedMP] = useState<MP | null>(null);
   const [voteFilterFromChart, setVoteFilterFromChart] = useState<string | null>(null);
-  const [zoom, setZoom] = useState(1);
 
   const currentSession = mockSessions.find(s => s.id === currentSessionId) || mockSessions[0];
   const currentMPs = useMemo(() => getVotingDataForSession(currentSessionId), [currentSessionId]);
@@ -62,95 +64,103 @@ const Index = () => {
   };
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
-        <AppSidebar
-          mps={currentMPs}
+    <div className="min-h-screen bg-background">
+      <header className="border-b bg-card">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center gap-3">
+            <Building2 className="w-8 h-8 text-primary" />
+            <div>
+              <h1 className="text-3xl font-bold">Parliament Voting Visualization</h1>
+              <p className="text-muted-foreground mt-1">
+                Thailand House of Representatives - 500 Seats
+              </p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8 space-y-6">
+        <VotingSummary 
+          mps={currentMPs} 
           sessions={mockSessions}
           currentSession={currentSession}
-          currentSessionIndex={currentSessionIndex}
-          parties={parties}
-          selectedParty={selectedParty}
-          selectedVote={selectedVote}
-          layout={layout}
-          highlightedMP={highlightedMP}
-          voteFilterFromChart={voteFilterFromChart}
-          zoom={zoom}
           onSessionChange={setCurrentSessionId}
           onPreviousSession={handlePreviousSession}
           onNextSession={handleNextSession}
           canGoPrevious={currentSessionIndex > 0}
           canGoNext={currentSessionIndex < mockSessions.length - 1}
-          onPartyChange={setSelectedParty}
-          onVoteChange={setSelectedVote}
-          onLayoutChange={setLayout}
-          onMPSelect={setHighlightedMP}
-          onVoteFilterFromChart={handleVoteFilterFromChart}
-          onZoomChange={setZoom}
         />
 
-        <div className="flex-1 flex flex-col">
-          <header className="border-b bg-card">
-            <div className="flex items-center gap-3 px-4 py-4">
-              <SidebarTrigger />
-              <Building2 className="w-8 h-8 text-primary" />
-              <div>
-                <h1 className="text-2xl font-bold">Parliament Voting Visualization</h1>
-                <p className="text-sm text-muted-foreground">
-                  Thailand House of Representatives - 500 Seats
-                </p>
-              </div>
-            </div>
-          </header>
+        <VoteBarChart 
+          mps={currentMPs} 
+          orientation="horizontal"
+          selectedVoteFilter={voteFilterFromChart}
+          onVoteClick={handleVoteFilterFromChart}
+        />
 
-          <main className="flex-1 flex flex-col overflow-hidden h-[calc(100vh-5rem)]">
-            <div className="flex-1 bg-card rounded-lg border shadow-sm m-4 overflow-hidden flex items-center justify-center min-h-0">
-              <ParliamentVisualization
-                mps={currentMPs}
-                layout={layout}
-                onMPClick={handleMPClick}
-                filterParty={selectedParty}
-                filterVote={effectiveVoteFilter}
-                highlightedMPId={highlightedMP?.id}
-                zoom={zoom}
-                onZoomChange={setZoom}
-              />
-            </div>
+        <PartyLegend mps={currentMPs} />
 
-            <div className="text-center text-sm text-muted-foreground space-y-2 pb-4 px-4">
-              <p>คลิกที่จุดเพื่อดูประวัติการโหวตของ MP • สีของจุดแสดงพรรคการเมือง • ไอคอนแสดงการโหวต</p>
-              <div className="flex items-center justify-center gap-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-success flex items-center justify-center">
-                    <span className="text-[8px] text-white">✓</span>
-                  </div>
-                  <span>เห็นด้วย</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-destructive flex items-center justify-center">
-                    <span className="text-[8px] text-white">✕</span>
-                  </div>
-                  <span>ไม่เห็นด้วย</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-abstain flex items-center justify-center">
-                    <span className="text-[8px] text-white">−</span>
-                  </div>
-                  <span>งดออกเสียง</span>
-                </div>
-              </div>
-            </div>
-          </main>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <FilterControls
+            parties={parties}
+            selectedParty={selectedParty}
+            selectedVote={selectedVote}
+            layout={layout}
+            onPartyChange={setSelectedParty}
+            onVoteChange={setSelectedVote}
+            onLayoutChange={setLayout}
+          />
+          
+          <VoterSearch
+            mps={currentMPs}
+            selectedMP={highlightedMP}
+            onMPSelect={setHighlightedMP}
+          />
         </div>
 
-        <MPProfileSidebar
-          mp={selectedMP}
-          history={mpHistory}
-          open={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-        />
-      </div>
-    </SidebarProvider>
+        <div className="bg-card rounded-lg border shadow-sm overflow-hidden">
+          <ParliamentVisualization
+            mps={currentMPs}
+            layout={layout}
+            onMPClick={handleMPClick}
+            filterParty={selectedParty}
+            filterVote={effectiveVoteFilter}
+            highlightedMPId={highlightedMP?.id}
+          />
+        </div>
+
+        <div className="text-center text-sm text-muted-foreground space-y-2">
+          <p>คลิกที่จุดเพื่อดูประวัติการโหวตของ MP • สีของจุดแสดงพรรคการเมือง • ไอคอนแสดงการโหวต</p>
+          <div className="flex items-center justify-center gap-6">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-success flex items-center justify-center">
+                <span className="text-[8px] text-white">✓</span>
+              </div>
+              <span>เห็นด้วย</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-destructive flex items-center justify-center">
+                <span className="text-[8px] text-white">✕</span>
+              </div>
+              <span>ไม่เห็นด้วย</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-abstain flex items-center justify-center">
+                <span className="text-[8px] text-white">−</span>
+              </div>
+              <span>งดออกเสียง</span>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <MPProfileSidebar
+        mp={selectedMP}
+        history={mpHistory}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+    </div>
   );
 };
 

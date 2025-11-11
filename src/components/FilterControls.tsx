@@ -65,12 +65,13 @@ const FilterControls = ({
         </div>
 
         <div>
-          <label className="text-sm font-medium mb-2 block">Layout</label>
+          <label className="text-sm font-medium mb-2 block">รูปแบบการแสดงผล</label>
           <div className="flex gap-2">
             <Button
               variant={layout === 'semicircle' ? 'default' : 'outline'}
               size="icon"
               onClick={() => onLayoutChange('semicircle')}
+              title="แสดงแบบครึ่งวงกลม"
             >
               <CircleDot className="h-4 w-4" />
             </Button>
@@ -78,6 +79,7 @@ const FilterControls = ({
               variant={layout === 'grid' ? 'default' : 'outline'}
               size="icon"
               onClick={() => onLayoutChange('grid')}
+              title="แสดงแบบตาราง"
             >
               <Grid3x3 className="h-4 w-4" />
             </Button>

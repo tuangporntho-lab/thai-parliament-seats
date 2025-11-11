@@ -5,6 +5,7 @@ import ParliamentVisualization from '@/components/ParliamentVisualization';
 import MPProfileSidebar from '@/components/MPProfileSidebar';
 import FilterControls from '@/components/FilterControls';
 import VotingSummary from '@/components/VotingSummary';
+import VoteBarChart from '@/components/VoteBarChart';
 import { Building2 } from 'lucide-react';
 
 const Index = () => {
@@ -45,6 +46,8 @@ const Index = () => {
           billName={mockSession.billName}
           date={mockSession.date}
         />
+
+        <VoteBarChart mps={mockMPs} orientation="horizontal" />
 
         <FilterControls
           parties={parties}

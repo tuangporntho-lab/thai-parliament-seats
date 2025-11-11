@@ -62,11 +62,10 @@ export function AppSidebar({
   const isCollapsed = state === 'collapsed';
 
   return (
-    <Sidebar className={isCollapsed ? 'w-14' : 'w-[400px]'} collapsible="icon">
+    <Sidebar className={isCollapsed ? 'w-14' : 'w-[480px]'} collapsible="icon">
       <SidebarContent>
-        <ScrollArea className="h-[calc(100vh-3rem)]">
-          <SidebarGroup>
-            <SidebarGroupContent className="space-y-4 p-4">
+        <SidebarGroup>
+          <SidebarGroupContent className="space-y-4 p-4">
               {!isCollapsed && (
                 <>
                   <VotingSummary 
@@ -107,8 +106,7 @@ export function AppSidebar({
                 </>
               )}
             </SidebarGroupContent>
-          </SidebarGroup>
-        </ScrollArea>
+        </SidebarGroup>
       </SidebarContent>
     </Sidebar>
   );

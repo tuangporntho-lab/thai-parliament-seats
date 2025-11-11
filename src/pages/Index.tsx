@@ -100,8 +100,8 @@ const Index = () => {
             </div>
           </header>
 
-          <main className="flex-1 p-8 overflow-auto">
-            <div className="bg-card rounded-lg border shadow-sm overflow-hidden mb-6">
+          <main className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 bg-card rounded-lg border shadow-sm m-4 overflow-hidden flex items-center justify-center">
               <ParliamentVisualization
                 mps={currentMPs}
                 layout={layout}
@@ -112,7 +112,7 @@ const Index = () => {
               />
             </div>
 
-            <div className="text-center text-sm text-muted-foreground space-y-2">
+            <div className="text-center text-sm text-muted-foreground space-y-2 pb-4 px-4">
               <p>คลิกที่จุดเพื่อดูประวัติการโหวตของ MP • สีของจุดแสดงพรรคการเมือง • ไอคอนแสดงการโหวต</p>
               <div className="flex items-center justify-center gap-6">
                 <div className="flex items-center gap-2">

@@ -55,29 +55,58 @@ const ParliamentVisualization = ({
   };
 
   const calculateSemicirclePosition = (index: number, total: number) => {
-    // จำนวนแถว (ปรับให้เหมาะกับ 500 ที่นั่ง)
-    const rows = 10;
-    const seatsPerRow = Math.ceil(total / rows);
-    const row = Math.floor(index / seatsPerRow);
-    const seatInRow = index % seatsPerRow;
-    const totalInRow = Math.min(seatsPerRow, total - row * seatsPerRow);
+    // คำนวณแถวและจำนวนที่นั่งแต่ละแถวแบบไดนามิก
+    // แถวในมีที่นั่งน้อย แถวนอกมีที่นั่งมาก (เพิ่มตามรัศมี)
+    const rows = 12; // จำนวนแถวทั้งหมด
     
-    // คำนวณรัศมีแต่ละแถว (เริ่มจากแถวในสุด)
-    const baseRadius = 25; // รัศมีแถวแรก (%)
-    const radiusIncrement = 7; // ระยะห่างระหว่างแถว (%)
-    const radius = baseRadius + row * radiusIncrement;
+    // คำนวณจำนวนที่นั่งในแต่ละแถว (เพิ่มขึ้นตามรัศมี)
+    const seatsPerRowArray: number[] = [];
+    let totalSeatsAllocated = 0;
     
-    // มุมเริ่มต้นและมุมสิ้นสุด (ครึ่งวงกลม)
-    const startAngle = Math.PI; // 180 องศา
-    const endAngle = 0; // 0 องศา
+    // สร้างอาร์เรย์จำนวนที่นั่งแต่ละแถว (แถวนอกมีมากกว่าแถวใน)
+    for (let i = 0; i < rows; i++) {
+      const seatsInThisRow = Math.round(20 + (i * 5)); // เริ่มที่ 20 ที่นั่ง, เพิ่มทีละ 5
+      seatsPerRowArray.push(seatsInThisRow);
+      totalSeatsAllocated += seatsInThisRow;
+    }
+    
+    // ปรับจำนวนที่นั่งในแถวสุดท้ายให้ครบ 500
+    const diff = total - totalSeatsAllocated;
+    seatsPerRowArray[rows - 1] += diff;
+    
+    // หาว่าที่นั่งปัจจุบันอยู่แถวไหน
+    let currentRow = 0;
+    let seatsBeforeRow = 0;
+    let accumulatedSeats = 0;
+    
+    for (let i = 0; i < rows; i++) {
+      accumulatedSeats += seatsPerRowArray[i];
+      if (index < accumulatedSeats) {
+        currentRow = i;
+        break;
+      }
+      seatsBeforeRow += seatsPerRowArray[i];
+    }
+    
+    const seatInRow = index - seatsBeforeRow;
+    const totalInRow = seatsPerRowArray[currentRow];
+    
+    // คำนวณรัศมีแต่ละแถว
+    const baseRadius = 15; // รัศมีแถวแรก (%)
+    const radiusIncrement = 6.5; // ระยะห่างระหว่างแถว (%)
+    const radius = baseRadius + currentRow * radiusIncrement;
+    
+    // มุมเริ่มต้นและมุมสิ้นสุด (ครึ่งวงกลม - เพิ่มเล็กน้อยเพื่อให้กว้างขึ้น)
+    const startAngle = Math.PI + 0.1; // มากกว่า 180 องศาเล็กน้อย
+    const endAngle = -0.1; // น้อยกว่า 0 องศาเล็กน้อย
     
     // คำนวณมุมของแต่ละที่นั่งในแถว
     const angleStep = (startAngle - endAngle) / (totalInRow > 1 ? totalInRow - 1 : 1);
     const angle = startAngle - angleStep * seatInRow;
     
-    // คำนวณตำแหน่ง x, y (ศูนย์กลางอยู่ที่ 50%, 95%)
+    // คำนวณตำแหน่ง x, y (ศูนย์กลางอยู่ที่ 50%, 90%)
     const centerX = 50;
-    const centerY = 95;
+    const centerY = 90;
     
     const x = centerX + Math.cos(angle) * radius;
     const y = centerY - Math.sin(angle) * radius;
@@ -138,7 +167,7 @@ const ParliamentVisualization = ({
       'w-full',
       layout === 'grid' 
         ? 'grid gap-2 p-8 place-items-center' 
-        : 'relative h-[600px] flex items-center justify-center'
+        : 'relative h-[700px] flex items-center justify-center'
     )}
     style={layout === 'grid' ? { gridTemplateColumns: 'repeat(25, minmax(0, 1fr))' } : undefined}
     >

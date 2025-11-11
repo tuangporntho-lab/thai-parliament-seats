@@ -46,11 +46,11 @@ const ParliamentVisualization = ({
   const getVoteIcon = (vote: VoteType) => {
     switch (vote) {
       case 'agree':
-        return <Check className="w-2 h-2 text-success-foreground" />;
+        return <Check className="w-1.5 h-1.5 text-success-foreground" />;
       case 'disagree':
-        return <X className="w-2 h-2 text-destructive-foreground" />;
+        return <X className="w-1.5 h-1.5 text-destructive-foreground" />;
       case 'abstain':
-        return <Minus className="w-2 h-2 text-abstain-foreground" />;
+        return <Minus className="w-1.5 h-1.5 text-abstain-foreground" />;
     }
   };
 
@@ -91,14 +91,14 @@ const ParliamentVisualization = ({
     const seatInRow = index - seatsBeforeRow;
     const totalInRow = seatsPerRowArray[currentRow];
     
-    // คำนวณรัศมีแต่ละแถว
-    const baseRadius = 15; // รัศมีแถวแรก (%)
-    const radiusIncrement = 6.5; // ระยะห่างระหว่างแถว (%)
+    // คำนวณรัศมีแต่ละแถว (เพิ่มระยะห่างระหว่างแถว)
+    const baseRadius = 12; // รัศมีแถวแรก (%)
+    const radiusIncrement = 7.5; // ระยะห่างระหว่างแถว (%) - เพิ่มขึ้น
     const radius = baseRadius + currentRow * radiusIncrement;
     
     // มุมเริ่มต้นและมุมสิ้นสุด (ครึ่งวงกลม - เพิ่มเล็กน้อยเพื่อให้กว้างขึ้น)
-    const startAngle = Math.PI + 0.1; // มากกว่า 180 องศาเล็กน้อย
-    const endAngle = -0.1; // น้อยกว่า 0 องศาเล็กน้อย
+    const startAngle = Math.PI + 0.15; // มากกว่า 180 องศาเล็กน้อย
+    const endAngle = -0.15; // น้อยกว่า 0 องศาเล็กน้อย
     
     // คำนวณมุมของแต่ละที่นั่งในแถว
     const angleStep = (startAngle - endAngle) / (totalInRow > 1 ? totalInRow - 1 : 1);
@@ -106,7 +106,7 @@ const ParliamentVisualization = ({
     
     // คำนวณตำแหน่ง x, y (ศูนย์กลางอยู่ที่ 50%, 90%)
     const centerX = 50;
-    const centerY = 90;
+    const centerY = 92;
     
     const x = centerX + Math.cos(angle) * radius;
     const y = centerY - Math.sin(angle) * radius;
@@ -129,16 +129,16 @@ const ParliamentVisualization = ({
               onMouseEnter={() => setHoveredMP(mp.id)}
               onMouseLeave={() => setHoveredMP(null)}
               className={cn(
-                'w-2.5 h-2.5 rounded-full transition-all duration-200 flex items-center justify-center',
-                'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+                'w-2 h-2 rounded-full transition-all duration-300 flex items-center justify-center',
+                'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1',
                 getVoteColor(mp.vote),
-                hoveredMP === mp.id && 'scale-150 ring-2 ring-primary',
+                hoveredMP === mp.id && 'scale-[2] ring-2 ring-primary z-10',
                 !isFiltered && 'opacity-20',
                 layout === 'semicircle' && 'absolute'
               )}
               style={layout === 'semicircle' ? { left: position.x, top: position.y } : undefined}
             >
-              {hoveredMP === mp.id && getVoteIcon(mp.vote)}
+              {getVoteIcon(mp.vote)}
             </button>
           </TooltipTrigger>
           <TooltipContent side="top" className="max-w-xs">
@@ -167,7 +167,7 @@ const ParliamentVisualization = ({
       'w-full',
       layout === 'grid' 
         ? 'grid gap-2 p-8 place-items-center' 
-        : 'relative h-[700px] flex items-center justify-center'
+        : 'relative h-[750px] flex items-center justify-center'
     )}
     style={layout === 'grid' ? { gridTemplateColumns: 'repeat(25, minmax(0, 1fr))' } : undefined}
     >

@@ -69,14 +69,6 @@ const ParliamentVisualization = ({
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   };
 
-  const getSequentialColor = (index: number, total: number) => {
-    // Generate sequential colors from left to right using smooth hue rotation
-    const hue = (index / total) * 360; // Full spectrum across all MPs
-    const saturation = 65;
-    const lightness = 50;
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-  };
-
   const getVoteIcon = (vote: VoteType) => {
     switch (vote) {
       case 'agree':
@@ -148,42 +140,14 @@ const ParliamentVisualization = ({
     return { x: `${x}%`, y: `${y}%`, row: currentRow };
   };
 
-  const calculateLinearPosition = (index: number, total: number) => {
-    // Arrange MPs in horizontal rows from left to right
-    const mpsPerRow = 50; // 50 MPs per row
-    const totalRows = Math.ceil(total / mpsPerRow);
-    
-    const row = Math.floor(index / mpsPerRow);
-    const positionInRow = index % mpsPerRow;
-    
-    // Calculate positions
-    const xSpacing = 98 / (mpsPerRow - 1); // Spread across 98% width (1% padding on each side)
-    const ySpacing = 90 / (totalRows > 1 ? totalRows - 1 : 1); // Spread across 90% height
-    
-    const x = 1 + (positionInRow * xSpacing); // Start at 1%, end at 99%
-    const y = 5 + (row * ySpacing); // Start at 5%, distribute evenly
-    
-    return { x: `${x}%`, y: `${y}%`, index };
-  };
-
   const renderSeat = (mp: MP, index: number) => {
     const isFiltered = filteredMPs.some((m) => m.id === mp.id);
     const isHighlighted = highlightedMPId === mp.id;
-    
-    let position: { x: string; y: string; row?: number; index?: number };
-    let backgroundColor: string | undefined;
-    
-    if (layout === 'semicircle') {
-      position = calculateSemicirclePosition(index, sortedMPs.length);
-      backgroundColor = getRowColor(position.row!);
-    } else if (layout === 'linear') {
-      position = calculateLinearPosition(index, sortedMPs.length);
-      backgroundColor = getSequentialColor(index, sortedMPs.length);
-    } else {
-      position = { x: '0%', y: '0%', row: 0 };
-      backgroundColor = undefined;
-    }
+    const position = layout === 'semicircle' 
+      ? calculateSemicirclePosition(index, sortedMPs.length)
+      : { x: '0%', y: '0%', row: 0 };
 
+    const rowColor = layout === 'semicircle' ? getRowColor(position.row) : undefined;
     const partyColor = getPartyColor(mp.party);
 
     return (
@@ -201,10 +165,10 @@ const ParliamentVisualization = ({
                 (hoveredMP === mp.id || isHighlighted) && 'scale-[1.8] ring-4 ring-primary z-20 shadow-lg',
                 !isFiltered && !isHighlighted && 'opacity-20',
                 isHighlighted && 'animate-pulse',
-                (layout === 'semicircle' || layout === 'linear') && 'absolute'
+                layout === 'semicircle' && 'absolute'
               )}
-              style={(layout === 'semicircle' || layout === 'linear')
-                ? { left: position.x, top: position.y, backgroundColor } 
+              style={layout === 'semicircle' 
+                ? { left: position.x, top: position.y, backgroundColor: rowColor } 
                 : undefined
               }
             >
@@ -225,14 +189,9 @@ const ParliamentVisualization = ({
                   mp.vote === 'abstain' && 'text-abstain'
                 )}>{mp.vote}</span>
               </p>
-              {layout === 'semicircle' && position.row !== undefined && (
+              {layout === 'semicircle' && (
                 <p className="text-sm text-muted-foreground mt-1">
                   Row: {position.row + 1}
-                </p>
-              )}
-              {layout === 'linear' && position.index !== undefined && (
-                <p className="text-sm text-muted-foreground mt-1">
-                  Position: {position.index + 1} of {sortedMPs.length}
                 </p>
               )}
             </div>
@@ -247,8 +206,6 @@ const ParliamentVisualization = ({
       'w-full',
       layout === 'grid' 
         ? 'grid gap-2 p-8 place-items-center' 
-        : layout === 'linear'
-        ? 'relative h-[600px] flex items-center justify-center p-8 w-full'
         : 'relative h-[800px] flex items-center justify-center p-8 max-w-[2000px] mx-auto'
     )}
     style={layout === 'grid' ? { gridTemplateColumns: 'repeat(25, minmax(0, 1fr))' } : undefined}

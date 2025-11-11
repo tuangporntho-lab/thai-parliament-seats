@@ -30,4 +30,4 @@ export interface MPHistory {
   abstainPercentage: number;
 }
 
-export type LayoutType = 'semicircle' | 'grid' | 'linear';
+export type LayoutType = 'semicircle' | 'grid';

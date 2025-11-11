@@ -46,11 +46,11 @@ const ParliamentVisualization = ({
   const getVoteIcon = (vote: VoteType) => {
     switch (vote) {
       case 'agree':
-        return <Check className="w-1.5 h-1.5 text-success-foreground" />;
+        return <Check className="w-2.5 h-2.5 text-success-foreground" />;
       case 'disagree':
-        return <X className="w-1.5 h-1.5 text-destructive-foreground" />;
+        return <X className="w-2.5 h-2.5 text-destructive-foreground" />;
       case 'abstain':
-        return <Minus className="w-1.5 h-1.5 text-abstain-foreground" />;
+        return <Minus className="w-2.5 h-2.5 text-abstain-foreground" />;
     }
   };
 
@@ -129,10 +129,10 @@ const ParliamentVisualization = ({
               onMouseEnter={() => setHoveredMP(mp.id)}
               onMouseLeave={() => setHoveredMP(null)}
               className={cn(
-                'w-2 h-2 rounded-full transition-all duration-300 flex items-center justify-center',
+                'w-3.5 h-3.5 rounded-full transition-all duration-300 flex items-center justify-center',
                 'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1',
                 getVoteColor(mp.vote),
-                hoveredMP === mp.id && 'scale-[2] ring-2 ring-primary z-10',
+                hoveredMP === mp.id && 'scale-[1.5] ring-2 ring-primary z-10',
                 !isFiltered && 'opacity-20',
                 layout === 'semicircle' && 'absolute'
               )}

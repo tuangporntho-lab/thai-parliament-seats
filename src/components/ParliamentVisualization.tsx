@@ -124,7 +124,7 @@ const ParliamentVisualization = ({
     
     // คำนวณตำแหน่ง x, y (ศูนย์กลางอยู่กลางจอ)
     const centerX = 50;
-    const centerY = 84; // ปรับให้อยู่กลางกรอบมากขึ้น
+    const centerY = 95; // ปรับให้ครึ่งวงกลมอยู่ตำแหน่งที่เห็นทั้งหมด
     
     const x = centerX + Math.cos(angle) * radius;
     const y = centerY - Math.sin(angle) * radius;
@@ -187,7 +187,7 @@ const ParliamentVisualization = ({
       'w-full',
       layout === 'grid' 
         ? 'grid gap-2 p-8 place-items-center' 
-        : 'relative h-[680px] flex items-center justify-center p-8 max-w-5xl mx-auto'
+        : 'relative h-[800px] flex items-center justify-center p-8 max-w-5xl mx-auto'
     )}
     style={layout === 'grid' ? { gridTemplateColumns: 'repeat(25, minmax(0, 1fr))' } : undefined}
     >

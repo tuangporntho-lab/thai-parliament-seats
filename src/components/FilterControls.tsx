@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Grid3x3, CircleDot } from 'lucide-react';
+import { Grid3x3, CircleDot, AlignJustify } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 interface FilterControlsProps {
@@ -74,6 +74,14 @@ const FilterControls = ({
               title="แสดงแบบครึ่งวงกลม"
             >
               <CircleDot className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={layout === 'linear' ? 'default' : 'outline'}
+              size="icon"
+              onClick={() => onLayoutChange('linear')}
+              title="แสดงแบบแนวนอน"
+            >
+              <AlignJustify className="h-4 w-4" />
             </Button>
             <Button
               variant={layout === 'grid' ? 'default' : 'outline'}

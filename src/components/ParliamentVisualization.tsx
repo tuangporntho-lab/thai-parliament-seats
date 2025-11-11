@@ -55,20 +55,32 @@ const ParliamentVisualization = ({
   };
 
   const calculateSemicirclePosition = (index: number, total: number) => {
+    // จำนวนแถว (ปรับให้เหมาะกับ 500 ที่นั่ง)
     const rows = 10;
     const seatsPerRow = Math.ceil(total / rows);
     const row = Math.floor(index / seatsPerRow);
     const seatInRow = index % seatsPerRow;
     const totalInRow = Math.min(seatsPerRow, total - row * seatsPerRow);
     
-    const radius = 200 + row * 30;
-    const startAngle = Math.PI;
-    const endAngle = 0;
-    const angleStep = (startAngle - endAngle) / (totalInRow - 1 || 1);
+    // คำนวณรัศมีแต่ละแถว (เริ่มจากแถวในสุด)
+    const baseRadius = 25; // รัศมีแถวแรก (%)
+    const radiusIncrement = 7; // ระยะห่างระหว่างแถว (%)
+    const radius = baseRadius + row * radiusIncrement;
+    
+    // มุมเริ่มต้นและมุมสิ้นสุด (ครึ่งวงกลม)
+    const startAngle = Math.PI; // 180 องศา
+    const endAngle = 0; // 0 องศา
+    
+    // คำนวณมุมของแต่ละที่นั่งในแถว
+    const angleStep = (startAngle - endAngle) / (totalInRow > 1 ? totalInRow - 1 : 1);
     const angle = startAngle - angleStep * seatInRow;
     
-    const x = 50 + Math.cos(angle) * (radius / 5);
-    const y = 100 - Math.sin(angle) * (radius / 5);
+    // คำนวณตำแหน่ง x, y (ศูนย์กลางอยู่ที่ 50%, 95%)
+    const centerX = 50;
+    const centerY = 95;
+    
+    const x = centerX + Math.cos(angle) * radius;
+    const y = centerY - Math.sin(angle) * radius;
     
     return { x: `${x}%`, y: `${y}%` };
   };
@@ -123,10 +135,10 @@ const ParliamentVisualization = ({
 
   return (
     <div className={cn(
-      'w-full h-full',
+      'w-full',
       layout === 'grid' 
         ? 'grid gap-2 p-8 place-items-center' 
-        : 'relative min-h-[500px]'
+        : 'relative h-[600px] flex items-center justify-center'
     )}
     style={layout === 'grid' ? { gridTemplateColumns: 'repeat(25, minmax(0, 1fr))' } : undefined}
     >

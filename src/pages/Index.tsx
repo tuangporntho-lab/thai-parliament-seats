@@ -18,11 +18,24 @@ const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<string>(mockSessions[0].id);
   const [highlightedMP, setHighlightedMP] = useState<MP | null>(null);
+  const [voteFilterFromChart, setVoteFilterFromChart] = useState<string | null>(null);
 
   const currentSession = mockSessions.find(s => s.id === currentSessionId) || mockSessions[0];
   const currentMPs = useMemo(() => getVotingDataForSession(currentSessionId), [currentSessionId]);
   
   const parties = Array.from(new Set(currentMPs.map((mp) => mp.party)));
+
+  // Sync vote filter from chart with main vote filter
+  const effectiveVoteFilter = (voteFilterFromChart || selectedVote) as VoteType | 'all';
+
+  const handleVoteFilterFromChart = (voteType: string | null) => {
+    setVoteFilterFromChart(voteType);
+    if (voteType) {
+      setSelectedVote(voteType as VoteType | 'all');
+    } else {
+      setSelectedVote('all');
+    }
+  };
 
   const handleMPClick = (mp: MP) => {
     setSelectedMP(mp);
@@ -55,7 +68,12 @@ const Index = () => {
           onSessionChange={setCurrentSessionId}
         />
 
-        <VoteBarChart mps={currentMPs} orientation="horizontal" />
+        <VoteBarChart 
+          mps={currentMPs} 
+          orientation="horizontal"
+          selectedVoteFilter={voteFilterFromChart}
+          onVoteClick={handleVoteFilterFromChart}
+        />
 
         <PartyLegend mps={currentMPs} />
 
@@ -83,7 +101,7 @@ const Index = () => {
             layout={layout}
             onMPClick={handleMPClick}
             filterParty={selectedParty}
-            filterVote={selectedVote}
+            filterVote={effectiveVoteFilter}
             highlightedMPId={highlightedMP?.id}
           />
         </div>

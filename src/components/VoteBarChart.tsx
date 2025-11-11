@@ -7,13 +7,16 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Check, X, Minus } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface VoteBarChartProps {
   mps: MP[];
   orientation?: 'horizontal' | 'vertical';
+  selectedVoteFilter?: string | null;
+  onVoteClick?: (voteType: string | null) => void;
 }
 
-const VoteBarChart = ({ mps, orientation = 'horizontal' }: VoteBarChartProps) => {
+const VoteBarChart = ({ mps, orientation = 'horizontal', selectedVoteFilter, onVoteClick }: VoteBarChartProps) => {
   const total = mps.length;
   const agreeCount = mps.filter((mp) => mp.vote === 'agree').length;
   const disagreeCount = mps.filter((mp) => mp.vote === 'disagree').length;
@@ -25,9 +28,23 @@ const VoteBarChart = ({ mps, orientation = 'horizontal' }: VoteBarChartProps) =>
 
   const isHorizontal = orientation === 'horizontal';
 
+  const handleVoteClick = (voteType: string) => {
+    if (onVoteClick) {
+      // Toggle: if already selected, deselect it
+      onVoteClick(selectedVoteFilter === voteType ? null : voteType);
+    }
+  };
+
   return (
     <Card className="p-6">
-      <h3 className="text-lg font-semibold mb-4">Vote Distribution</h3>
+      <h3 className="text-lg font-semibold mb-4">
+        Vote Distribution
+        {selectedVoteFilter && (
+          <span className="text-sm font-normal text-muted-foreground ml-2">
+            (กรอง: {selectedVoteFilter === 'agree' ? 'เห็นด้วย' : selectedVoteFilter === 'disagree' ? 'ไม่เห็นด้วย' : 'งดออกเสียง'})
+          </span>
+        )}
+      </h3>
       
       <div className={`flex ${isHorizontal ? 'flex-row h-16' : 'flex-col w-16'} rounded-lg overflow-hidden`}>
         {/* Agree Section */}
@@ -35,10 +52,14 @@ const VoteBarChart = ({ mps, orientation = 'horizontal' }: VoteBarChartProps) =>
           <Tooltip>
             <TooltipTrigger asChild>
               <div
-                className="bg-success hover:opacity-80 transition-opacity cursor-pointer flex items-center justify-center"
+                className={cn(
+                  "bg-success hover:opacity-80 transition-all cursor-pointer flex items-center justify-center",
+                  selectedVoteFilter === 'agree' && "ring-4 ring-primary"
+                )}
                 style={{
                   [isHorizontal ? 'width' : 'height']: `${agreePercent}%`,
                 }}
+                onClick={() => handleVoteClick('agree')}
               >
                 {agreePercent > 15 && (
                   <div className="flex items-center gap-2 text-success-foreground">
@@ -66,10 +87,14 @@ const VoteBarChart = ({ mps, orientation = 'horizontal' }: VoteBarChartProps) =>
           <Tooltip>
             <TooltipTrigger asChild>
               <div
-                className="bg-destructive hover:opacity-80 transition-opacity cursor-pointer flex items-center justify-center"
+                className={cn(
+                  "bg-destructive hover:opacity-80 transition-all cursor-pointer flex items-center justify-center",
+                  selectedVoteFilter === 'disagree' && "ring-4 ring-primary"
+                )}
                 style={{
                   [isHorizontal ? 'width' : 'height']: `${disagreePercent}%`,
                 }}
+                onClick={() => handleVoteClick('disagree')}
               >
                 {disagreePercent > 15 && (
                   <div className="flex items-center gap-2 text-destructive-foreground">
@@ -97,10 +122,14 @@ const VoteBarChart = ({ mps, orientation = 'horizontal' }: VoteBarChartProps) =>
           <Tooltip>
             <TooltipTrigger asChild>
               <div
-                className="bg-abstain hover:opacity-80 transition-opacity cursor-pointer flex items-center justify-center"
+                className={cn(
+                  "bg-abstain hover:opacity-80 transition-all cursor-pointer flex items-center justify-center",
+                  selectedVoteFilter === 'abstain' && "ring-4 ring-primary"
+                )}
                 style={{
                   [isHorizontal ? 'width' : 'height']: `${abstainPercent}%`,
                 }}
+                onClick={() => handleVoteClick('abstain')}
               >
                 {abstainPercent > 15 && (
                   <div className="flex items-center gap-2 text-abstain-foreground">

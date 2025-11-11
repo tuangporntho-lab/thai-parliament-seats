@@ -34,6 +34,16 @@ const ParliamentVisualization = ({
     return partyMatch && voteMatch;
   });
 
+  // Sort MPs by party for better visualization grouping
+  const sortedMPs = [...mps].sort((a, b) => {
+    // First sort by party
+    const partyCompare = a.party.localeCompare(b.party);
+    if (partyCompare !== 0) return partyCompare;
+    // Then by vote type
+    const voteOrder = { agree: 0, disagree: 1, abstain: 2 };
+    return voteOrder[a.vote] - voteOrder[b.vote];
+  });
+
   const getPartyColor = (party: string) => {
     const partyKey = party.toLowerCase().replace(/\s+/g, '-');
     
@@ -126,7 +136,7 @@ const ParliamentVisualization = ({
     const isFiltered = filteredMPs.some((m) => m.id === mp.id);
     const isHighlighted = highlightedMPId === mp.id;
     const position = layout === 'semicircle' 
-      ? calculateSemicirclePosition(index, mps.length)
+      ? calculateSemicirclePosition(index, sortedMPs.length)
       : { x: '0%', y: '0%' };
 
     return (
@@ -181,7 +191,7 @@ const ParliamentVisualization = ({
     )}
     style={layout === 'grid' ? { gridTemplateColumns: 'repeat(25, minmax(0, 1fr))' } : undefined}
     >
-      {mps.map((mp, index) => renderSeat(mp, index))}
+      {sortedMPs.map((mp, index) => renderSeat(mp, index))}
     </div>
   );
 };

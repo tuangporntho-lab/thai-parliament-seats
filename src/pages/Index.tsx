@@ -1,6 +1,11 @@
 import { useState, useMemo } from 'react';
-import { mockMPs, mockSessions, generateMPHistory, getVotingDataForSession } from '@/data/mockData';
+import { mockMPs, mockSessions as rawMockSessions, generateMPHistory, getVotingDataForSession } from '@/data/mockData';
 import { MP, LayoutType, VoteType, VotingSession } from '@/types/parliament';
+
+// Sort sessions by date (most recent first)
+const mockSessions = [...rawMockSessions].sort((a, b) => 
+  new Date(b.date).getTime() - new Date(a.date).getTime()
+);
 import ParliamentVisualization from '@/components/ParliamentVisualization';
 import MPProfileSidebar from '@/components/MPProfileSidebar';
 import FilterControls from '@/components/FilterControls';
@@ -44,6 +49,20 @@ const Index = () => {
 
   const mpHistory = selectedMP ? generateMPHistory(selectedMP.id) : null;
 
+  const currentSessionIndex = mockSessions.findIndex(s => s.id === currentSessionId);
+  
+  const handlePreviousSession = () => {
+    if (currentSessionIndex > 0) {
+      setCurrentSessionId(mockSessions[currentSessionIndex - 1].id);
+    }
+  };
+
+  const handleNextSession = () => {
+    if (currentSessionIndex < mockSessions.length - 1) {
+      setCurrentSessionId(mockSessions[currentSessionIndex + 1].id);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
@@ -66,6 +85,10 @@ const Index = () => {
           sessions={mockSessions}
           currentSession={currentSession}
           onSessionChange={setCurrentSessionId}
+          onPreviousSession={handlePreviousSession}
+          onNextSession={handleNextSession}
+          canGoPrevious={currentSessionIndex > 0}
+          canGoNext={currentSessionIndex < mockSessions.length - 1}
         />
 
         <VoteBarChart 

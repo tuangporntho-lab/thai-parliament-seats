@@ -1,22 +1,46 @@
 import { MP, VotingSession } from '@/types/parliament';
 import { Card } from '@/components/ui/card';
-import { Check, X, Minus, ChevronDown } from 'lucide-react';
+import { Check, X, Minus, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown } from 'lucide-react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 
 interface VotingSummaryProps {
   mps: MP[];
   sessions: VotingSession[];
   currentSession: VotingSession;
   onSessionChange: (sessionId: string) => void;
+  onPreviousSession: () => void;
+  onNextSession: () => void;
+  canGoPrevious: boolean;
+  canGoNext: boolean;
 }
 
-const VotingSummary = ({ mps, sessions, currentSession, onSessionChange }: VotingSummaryProps) => {
+const VotingSummary = ({ 
+  mps, 
+  sessions, 
+  currentSession, 
+  onSessionChange,
+  onPreviousSession,
+  onNextSession,
+  canGoPrevious,
+  canGoNext
+}: VotingSummaryProps) => {
+  const [open, setOpen] = useState(false);
+  
   const agreeCount = mps.filter((mp) => mp.vote === 'agree').length;
   const disagreeCount = mps.filter((mp) => mp.vote === 'disagree').length;
   const abstainCount = mps.filter((mp) => mp.vote === 'abstain').length;
@@ -26,29 +50,84 @@ const VotingSummary = ({ mps, sessions, currentSession, onSessionChange }: Votin
   return (
     <Card className="p-6">
       <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold">{currentSession.billName}</h2>
-            <p className="text-muted-foreground mt-1">{currentSession.date}</p>
-            <p className="text-sm text-muted-foreground mt-2">{currentSession.description}</p>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={onPreviousSession}
+              disabled={!canGoPrevious}
+              className="shrink-0"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            
+            <div className="flex-1">
+              <h2 className="text-2xl font-bold">{currentSession.billName}</h2>
+              <p className="text-muted-foreground mt-1">{currentSession.date}</p>
+              <p className="text-sm text-muted-foreground mt-2">{currentSession.description}</p>
+            </div>
+
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={onNextSession}
+              disabled={!canGoNext}
+              className="shrink-0"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
           </div>
-          <div className="sm:min-w-[280px]">
-            <label className="text-sm font-medium mb-2 block">เลือกมติการโหวต</label>
-            <Select value={currentSession.id} onValueChange={onSessionChange}>
-              <SelectTrigger className="bg-background">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-popover z-50">
-                {sessions.map((session) => (
-                  <SelectItem key={session.id} value={session.id}>
-                    <div className="flex flex-col items-start">
-                      <span className="font-medium">{session.billName}</span>
-                      <span className="text-xs text-muted-foreground">{session.date}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+
+          <div className="w-full">
+            <label className="text-sm font-medium mb-2 block">ค้นหามติการโหวต</label>
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open}
+                  className="w-full justify-between bg-background"
+                >
+                  <div className="flex flex-col items-start overflow-hidden">
+                    <span className="font-medium truncate max-w-full">{currentSession.billName}</span>
+                    <span className="text-xs text-muted-foreground">{currentSession.date}</span>
+                  </div>
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-full p-0 bg-popover" align="start">
+                <Command>
+                  <CommandInput placeholder="ค้นหามติการโหวต..." className="h-9" />
+                  <CommandList>
+                    <CommandEmpty>ไม่พบมติการโหวต</CommandEmpty>
+                    <CommandGroup>
+                      {sessions.map((session) => (
+                        <CommandItem
+                          key={session.id}
+                          value={session.billName}
+                          onSelect={() => {
+                            onSessionChange(session.id);
+                            setOpen(false);
+                          }}
+                        >
+                          <div className="flex flex-col items-start w-full">
+                            <span className="font-medium">{session.billName}</span>
+                            <span className="text-xs text-muted-foreground">{session.date}</span>
+                          </div>
+                          <Check
+                            className={cn(
+                              "ml-auto h-4 w-4",
+                              currentSession.id === session.id ? "opacity-100" : "opacity-0"
+                            )}
+                          />
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 

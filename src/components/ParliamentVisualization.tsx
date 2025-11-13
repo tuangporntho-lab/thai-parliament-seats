@@ -136,7 +136,7 @@ const ParliamentVisualization = ({
 
     // คำนวณตำแหน่ง x, y (ศูนย์กลางอยู่กลางจอ)
     const centerX = 50;
-    const centerY = 80; // ปรับให้ครึ่งวงกลมอยู่ตำแหน่งที่เห็นทั้งหมด
+    const centerY = 95; // ปรับให้ครึ่งวงกลมอยู่ตำแหน่งที่เห็นทั้งหมด
 
     const x = centerX + Math.cos(angle) * radius;
     const y = centerY - Math.sin(angle) * radius;

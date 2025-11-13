@@ -211,7 +211,7 @@ const ParliamentVisualization = ({
         "w-full",
         layout === "grid"
           ? "grid gap-2 p-8 place-items-center"
-          : "relative h-[500px] flex items-center justify-center p-8 max-w-[1000px] mx-auto",
+          : "relative h-[1000px] flex items-center justify-center p-8 max-w-[2000px] mx-auto",
       )}
       style={layout === "grid" ? { gridTemplateColumns: "repeat(25, minmax(0, 1fr))" } : undefined}
     >

@@ -134,7 +134,7 @@ const ParliamentVisualization = ({
 
     // คำนวณตำแหน่ง x, y
     const centerX = 50;
-    const centerY = 50;
+    const centerY = 60;
 
     const x = centerX + Math.cos(angle) * radius;
     const y = centerY - Math.sin(angle) * radius;
@@ -209,7 +209,7 @@ const ParliamentVisualization = ({
         "w-full",
         layout === "grid"
           ? "grid gap-2 p-8 place-items-center"
-          : "relative h-fit flex items-center justify-center p-4 max-w-[1200px] mx-auto",
+          : "relative h-[800px] flex items-center justify-center p-4 max-w-[1000px] mx-auto",
       )}
       style={layout === "grid" ? { gridTemplateColumns: "repeat(25, minmax(0, 1fr))" } : undefined}
     >

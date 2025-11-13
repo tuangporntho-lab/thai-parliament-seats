@@ -208,8 +208,8 @@ const ParliamentVisualization = ({
       className={cn(
         "w-full",
         layout === "grid"
-          ? "grid gap-2 p-8 place-items-center"
-          : "relative h-[800px] flex items-center justify-center p-8 max-w-[1000px] mx-auto",
+          ? "grid gap-2 p-4 place-items-center"
+          : "relative h-[650px] flex items-center justify-center p-4",
       )}
       style={layout === "grid" ? { gridTemplateColumns: "repeat(25, minmax(0, 1fr))" } : undefined}
     >

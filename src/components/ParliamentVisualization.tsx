@@ -76,11 +76,11 @@ const ParliamentVisualization = ({
   const getVoteIcon = (vote: VoteType) => {
     switch (vote) {
       case "agree":
-        return <Check className="w-2.5 h-2.5 text-white" />;
+        return <Check className="w-3 h-3 text-white" />;
       case "disagree":
-        return <X className="w-2.5 h-2.5 text-white" />;
+        return <X className="w-3 h-3 text-white" />;
       case "abstain":
-        return <Minus className="w-2.5 h-2.5 text-white" />;
+        return <Minus className="w-3 h-3 text-white" />;
     }
   };
 
@@ -160,7 +160,7 @@ const ParliamentVisualization = ({
               onMouseEnter={() => setHoveredMP(mp.id)}
               onMouseLeave={() => setHoveredMP(null)}
               className={cn(
-                "w-3.5 h-3.5 rounded-full transition-all duration-300 flex items-center justify-center",
+                "w-[15px] h-[15px] rounded-full transition-all duration-300 flex items-center justify-center",
                 "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1",
                 layout === "grid" && partyColor,
                 (hoveredMP === mp.id || isHighlighted) && "scale-[1.8] ring-4 ring-primary z-20 shadow-lg",

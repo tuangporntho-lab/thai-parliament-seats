@@ -1,44 +1,42 @@
-import { useState, useMemo } from 'react';
-import { mockMPs, mockSessions as rawMockSessions, generateMPHistory, getVotingDataForSession } from '@/data/mockData';
-import { MP, LayoutType, VoteType, VotingSession } from '@/types/parliament';
+import { useState, useMemo } from "react";
+import { mockMPs, mockSessions as rawMockSessions, generateMPHistory, getVotingDataForSession } from "@/data/mockData";
+import { MP, LayoutType, VoteType, VotingSession } from "@/types/parliament";
 
 // Sort sessions by date (most recent first)
-const mockSessions = [...rawMockSessions].sort((a, b) => 
-  new Date(b.date).getTime() - new Date(a.date).getTime()
-);
-import ParliamentVisualization from '@/components/ParliamentVisualization';
-import MPProfileSidebar from '@/components/MPProfileSidebar';
-import FilterControls from '@/components/FilterControls';
-import VotingSummary from '@/components/VotingSummary';
-import VoteBarChart from '@/components/VoteBarChart';
-import VoterSearch from '@/components/VoterSearch';
-import PartyLegend from '@/components/PartyLegend';
-import { Building2 } from 'lucide-react';
+const mockSessions = [...rawMockSessions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+import ParliamentVisualization from "@/components/ParliamentVisualization";
+import MPProfileSidebar from "@/components/MPProfileSidebar";
+import FilterControls from "@/components/FilterControls";
+import VotingSummary from "@/components/VotingSummary";
+import VoteBarChart from "@/components/VoteBarChart";
+import VoterSearch from "@/components/VoterSearch";
+import PartyLegend from "@/components/PartyLegend";
+import { Building2 } from "lucide-react";
 
 const Index = () => {
   const [selectedMP, setSelectedMP] = useState<MP | null>(null);
-  const [selectedParty, setSelectedParty] = useState<string>('all');
-  const [selectedVote, setSelectedVote] = useState<VoteType | 'all'>('all');
-  const [layout, setLayout] = useState<LayoutType>('semicircle');
+  const [selectedParty, setSelectedParty] = useState<string>("all");
+  const [selectedVote, setSelectedVote] = useState<VoteType | "all">("all");
+  const [layout, setLayout] = useState<LayoutType>("semicircle");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<string>(mockSessions[0].id);
   const [highlightedMP, setHighlightedMP] = useState<MP | null>(null);
   const [voteFilterFromChart, setVoteFilterFromChart] = useState<string | null>(null);
 
-  const currentSession = mockSessions.find(s => s.id === currentSessionId) || mockSessions[0];
+  const currentSession = mockSessions.find((s) => s.id === currentSessionId) || mockSessions[0];
   const currentMPs = useMemo(() => getVotingDataForSession(currentSessionId), [currentSessionId]);
-  
+
   const parties = Array.from(new Set(currentMPs.map((mp) => mp.party)));
 
   // Sync vote filter from chart with main vote filter
-  const effectiveVoteFilter = (voteFilterFromChart || selectedVote) as VoteType | 'all';
+  const effectiveVoteFilter = (voteFilterFromChart || selectedVote) as VoteType | "all";
 
   const handleVoteFilterFromChart = (voteType: string | null) => {
     setVoteFilterFromChart(voteType);
     if (voteType) {
-      setSelectedVote(voteType as VoteType | 'all');
+      setSelectedVote(voteType as VoteType | "all");
     } else {
-      setSelectedVote('all');
+      setSelectedVote("all");
     }
   };
 
@@ -49,8 +47,8 @@ const Index = () => {
 
   const mpHistory = selectedMP ? generateMPHistory(selectedMP.id) : null;
 
-  const currentSessionIndex = mockSessions.findIndex(s => s.id === currentSessionId);
-  
+  const currentSessionIndex = mockSessions.findIndex((s) => s.id === currentSessionId);
+
   const handlePreviousSession = () => {
     if (currentSessionIndex > 0) {
       setCurrentSessionId(mockSessions[currentSessionIndex - 1].id);
@@ -71,17 +69,15 @@ const Index = () => {
             <Building2 className="w-8 h-8 text-primary" />
             <div>
               <h1 className="text-3xl font-bold">Parliament Voting Visualization</h1>
-              <p className="text-muted-foreground mt-1">
-                Thailand House of Representatives - 500 Seats
-              </p>
+              <p className="text-muted-foreground mt-1">Thailand House of Representatives - 500 Seats</p>
             </div>
           </div>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-8 space-y-6">
-        <VotingSummary 
-          mps={currentMPs} 
+        <VotingSummary
+          mps={currentMPs}
           sessions={mockSessions}
           currentSession={currentSession}
           onSessionChange={setCurrentSessionId}
@@ -91,8 +87,8 @@ const Index = () => {
           canGoNext={currentSessionIndex < mockSessions.length - 1}
         />
 
-        <VoteBarChart 
-          mps={currentMPs} 
+        <VoteBarChart
+          mps={currentMPs}
           orientation="horizontal"
           selectedVoteFilter={voteFilterFromChart}
           onVoteClick={handleVoteFilterFromChart}
@@ -110,15 +106,11 @@ const Index = () => {
             onVoteChange={setSelectedVote}
             onLayoutChange={setLayout}
           />
-          
-          <VoterSearch
-            mps={currentMPs}
-            selectedMP={highlightedMP}
-            onMPSelect={setHighlightedMP}
-          />
+
+          <VoterSearch mps={currentMPs} selectedMP={highlightedMP} onMPSelect={setHighlightedMP} />
         </div>
 
-        <div className="bg-card rounded-lg border shadow-sm overflow-hidden">
+        <div className="bg-card rounded-lg border shadow-sm">
           <ParliamentVisualization
             mps={currentMPs}
             layout={layout}
@@ -154,12 +146,7 @@ const Index = () => {
         </div>
       </main>
 
-      <MPProfileSidebar
-        mp={selectedMP}
-        history={mpHistory}
-        open={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+      <MPProfileSidebar mp={selectedMP} history={mpHistory} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
     </div>
   );
 };

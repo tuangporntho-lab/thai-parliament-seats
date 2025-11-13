@@ -120,13 +120,13 @@ const ParliamentVisualization = ({
     const totalInRow = seatsPerRowArray[currentRow];
 
     // คำนวณรัศมีแต่ละแถว
-    const baseRadius = 15;
-    const radiusIncrement = 2;
+    const baseRadius = 20;
+    const radiusIncrement = 3;
     const radius = baseRadius + currentRow * radiusIncrement;
 
     // มุมเริ่มต้นและมุมสิ้นสุด
-    const startAngle = Math.PI + 0.15; // ซ้ายสุด (~180°)
-    const endAngle = -0.15; // ขวาสุด (~0°)
+    const startAngle = Math.PI + 0.01; // ซ้ายสุด (~180°)
+    const endAngle = -0.01; // ขวาสุด (~0°)
 
     // คำนวณมุมของแต่ละที่นั่งในแถว (จากซ้ายไปขวา)
     const angleStep = (startAngle - endAngle) / (totalInRow > 1 ? totalInRow - 1 : 1);
@@ -209,7 +209,7 @@ const ParliamentVisualization = ({
         "w-full",
         layout === "grid"
           ? "grid gap-2 p-8 place-items-center"
-          : "relative h-[550px] flex items-center justify-center p-2 max-w-[1000px] mx-auto",
+          : "relative h-[600px] flex items-center justify-center p-2 max-w-[1000px] mx-auto",
       )}
       style={layout === "grid" ? { gridTemplateColumns: "repeat(25, minmax(0, 1fr))" } : undefined}
     >

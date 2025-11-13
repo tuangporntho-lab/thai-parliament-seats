@@ -118,7 +118,7 @@ const Index = () => {
           />
         </div>
 
-        <div className="bg-card rounded-lg border shadow-sm overflow-hidden">
+        <div className="bg-card rounded-lg border shadow-sm overflow-auto">
           <ParliamentVisualization
             mps={currentMPs}
             layout={layout}

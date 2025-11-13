@@ -160,7 +160,7 @@ const ParliamentVisualization = ({
               onMouseEnter={() => setHoveredMP(mp.id)}
               onMouseLeave={() => setHoveredMP(null)}
               className={cn(
-                "w-[15px] h-[15px] rounded-full transition-all duration-300 flex items-center justify-center",
+                "w-[16px] h-[16px] rounded-full transition-all duration-300 flex items-center justify-center",
                 "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1",
                 layout === "grid" && partyColor,
                 (hoveredMP === mp.id || isHighlighted) && "scale-[1.8] ring-4 ring-primary z-20 shadow-lg",

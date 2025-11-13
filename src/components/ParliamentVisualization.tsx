@@ -85,17 +85,15 @@ const ParliamentVisualization = ({
   };
 
   const calculateSemicirclePosition = (index: number, total: number) => {
-    // คำนวณแถวและจำนวนที่นั่งแต่ละแถวแบบไดนามิก
-    // แถวในมีที่นั่งน้อย แถวนอกมีที่นั่งมาก (เพิ่มตามรัศมี)
     const rows = 12; // จำนวนแถวทั้งหมด
 
-    // คำนวณจำนวนที่นั่งในแต่ละแถว (เพิ่มขึ้นตามรัศมี)
+    // คำนวณจำนวนที่นั่งในแต่ละแถว
     const seatsPerRowArray: number[] = [];
     let totalSeatsAllocated = 0;
 
-    // สร้างอาร์เรย์จำนวนที่นั่งแต่ละแถว (แถวนอกมีมากกว่าแถวใน)
+    // เริ่มที่ 25 ที่นั่ง, เพิ่มทีละ 3
     for (let i = 0; i < rows; i++) {
-      const seatsInThisRow = Math.round(20 + i * 5); // เริ่มที่ 20 ที่นั่ง, เพิ่มทีละ 5
+      const seatsInThisRow = 25 + i * 3; // แถว 1: 25, แถว 2: 28, แถว 3: 31...
       seatsPerRowArray.push(seatsInThisRow);
       totalSeatsAllocated += seatsInThisRow;
     }
@@ -121,22 +119,22 @@ const ParliamentVisualization = ({
     const seatInRow = index - seatsBeforeRow;
     const totalInRow = seatsPerRowArray[currentRow];
 
-    // คำนวณรัศมีแต่ละแถว (เพิ่มระยะห่างระหว่างแถว)
-    const baseRadius = 8; // รัศมีแถวแรก (%)
-    const radiusIncrement = 7.2; // ระยะห่างระหว่างแถว (%) - เพิ่มขึ้นเพื่อให้มีพื้นที่มากขึ้น
+    // คำนวณรัศมีแต่ละแถว
+    const baseRadius = 8;
+    const radiusIncrement = 7.2;
     const radius = baseRadius + currentRow * radiusIncrement;
 
-    // มุมเริ่มต้นและมุมสิ้นสุด (เพิ่มมุมเพื่อให้จุดกระจายตัวมากขึ้นในแนวนอน)
-    const startAngle = Math.PI + 0.05; // 180 องศา + เล็กน้อย
-    const endAngle = -0.05; // 0 องศา - เล็กน้อย
+    // มุมเริ่มต้นและมุมสิ้นสุด
+    const startAngle = Math.PI + 0.05; // ซ้ายสุด (~180°)
+    const endAngle = -0.05; // ขวาสุด (~0°)
 
-    // คำนวณมุมของแต่ละที่นั่งในแถว
+    // คำนวณมุมของแต่ละที่นั่งในแถว (จากซ้ายไปขวา)
     const angleStep = (startAngle - endAngle) / (totalInRow > 1 ? totalInRow - 1 : 1);
-    const angle = startAngle - angleStep * seatInRow;
+    const angle = startAngle - angleStep * seatInRow; // ลำดับจากซ้ายไปขวา
 
-    // คำนวณตำแหน่ง x, y (ศูนย์กลางอยู่กลางจอ)
+    // คำนวณตำแหน่ง x, y
     const centerX = 50;
-    const centerY = 95; // ปรับให้ครึ่งวงกลมอยู่ตำแหน่งที่เห็นทั้งหมด
+    const centerY = 95;
 
     const x = centerX + Math.cos(angle) * radius;
     const y = centerY - Math.sin(angle) * radius;

@@ -207,7 +207,7 @@ const ParliamentVisualization = ({
 
   return (
     <div className={cn(
-      'w-full',
+      'w-full overflow-auto',
       layout === 'grid' 
         ? 'grid gap-2 p-8 place-items-center' 
         : 'relative min-h-[700px] h-auto flex items-center justify-center p-8 py-12 max-w-[2000px] mx-auto'

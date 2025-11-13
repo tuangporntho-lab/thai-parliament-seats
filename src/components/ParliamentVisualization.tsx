@@ -120,8 +120,8 @@ const ParliamentVisualization = ({
     const totalInRow = seatsPerRowArray[currentRow];
 
     // คำนวณรัศมีแต่ละแถว
-    const baseRadius = 8;
-    const radiusIncrement = 5;
+    const baseRadius = 15;
+    const radiusIncrement = 2;
     const radius = baseRadius + currentRow * radiusIncrement;
 
     // มุมเริ่มต้นและมุมสิ้นสุด

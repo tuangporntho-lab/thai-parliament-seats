@@ -110,7 +110,7 @@ const Index = () => {
           <VoterSearch mps={currentMPs} selectedMP={highlightedMP} onMPSelect={setHighlightedMP} />
         </div>
 
-        <div className="bg-card rounded-lg border shadow-sm h-fit overflow-hidden">
+        <div className="bg-card rounded-lg border shadow-sm h-[550px] overflow-hidden">
           <ParliamentVisualization
             mps={currentMPs}
             layout={layout}

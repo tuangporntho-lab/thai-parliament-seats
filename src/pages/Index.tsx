@@ -10,6 +10,7 @@ import FilterControls from "@/components/FilterControls";
 import VotingSummary from "@/components/VotingSummary";
 import VoteBarChart from "@/components/VoteBarChart";
 import VoterSearch from "@/components/VoterSearch";
+import PartyVoteBreakdown from "@/components/PartyVoteBreakdown";
 import { Building2 } from "lucide-react";
 
 const Index = () => {
@@ -82,7 +83,7 @@ const Index = () => {
       <main className="flex-1 overflow-hidden">
         <div className="h-full flex">
           {/* Left Sidebar */}
-          <div className="w-[400px] border-r bg-card overflow-y-auto flex-shrink-0">
+          <div className="w-[350px] border-r bg-card overflow-y-auto flex-shrink-0">
             <div className="p-4 space-y-4">
               <VotingSummary
                 mps={currentMPs}
@@ -166,6 +167,11 @@ const Index = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Right Sidebar */}
+          <div className="w-[350px] border-l bg-card flex-shrink-0">
+            <PartyVoteBreakdown mps={currentMPs} />
           </div>
         </div>
       </main>

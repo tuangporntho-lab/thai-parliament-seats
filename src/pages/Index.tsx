@@ -67,86 +67,100 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-6">
+    <div className="min-h-screen h-screen bg-background flex flex-col overflow-hidden">
+      <header className="border-b bg-card flex-shrink-0">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-3">
             <Building2 className="w-8 h-8 text-primary" />
             <div>
-              <h1 className="text-3xl font-bold">Parliament Voting Visualization</h1>
-              <p className="text-muted-foreground mt-1">Thailand House of Representatives - 500 Seats</p>
+              <h1 className="text-2xl font-bold">Parliament Voting Visualization</h1>
+              <p className="text-sm text-muted-foreground">Thailand House of Representatives - 500 Seats</p>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 space-y-6">
-        <VotingSummary
-          mps={currentMPs}
-          sessions={mockSessions}
-          currentSession={currentSession}
-          onSessionChange={setCurrentSessionId}
-          onPreviousSession={handlePreviousSession}
-          onNextSession={handleNextSession}
-          canGoPrevious={currentSessionIndex > 0}
-          canGoNext={currentSessionIndex < mockSessions.length - 1}
-        />
+      <main className="flex-1 overflow-hidden">
+        <div className="h-full flex">
+          {/* Left Sidebar */}
+          <div className="w-[400px] border-r bg-card overflow-y-auto flex-shrink-0">
+            <div className="p-4 space-y-4">
+              <VotingSummary
+                mps={currentMPs}
+                sessions={mockSessions}
+                currentSession={currentSession}
+                onSessionChange={setCurrentSessionId}
+                onPreviousSession={handlePreviousSession}
+                onNextSession={handleNextSession}
+                canGoPrevious={currentSessionIndex > 0}
+                canGoNext={currentSessionIndex < mockSessions.length - 1}
+              />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <FilterControls
-            parties={parties}
-            selectedParties={selectedParties}
-            selectedVotes={selectedVotes}
-            layout={layout}
-            onPartiesChange={setSelectedParties}
-            onVotesChange={setSelectedVotes}
-            onLayoutChange={setLayout}
-          />
+              <div className="space-y-4">
+                <FilterControls
+                  parties={parties}
+                  selectedParties={selectedParties}
+                  selectedVotes={selectedVotes}
+                  layout={layout}
+                  onPartiesChange={setSelectedParties}
+                  onVotesChange={setSelectedVotes}
+                  onLayoutChange={setLayout}
+                />
 
-          <VoterSearch mps={currentMPs} selectedMPs={selectedMPsForSearch} onMPsChange={setSelectedMPsForSearch} />
-        </div>
-
-        <VoteBarChart
-          mps={filteredMPsForChart}
-          orientation="horizontal"
-          selectedVoteFilter={voteFilterFromChart}
-          onVoteClick={handleVoteFilterFromChart}
-        />
-
-        <div className="bg-card rounded-lg border shadow-sm h-[550px] overflow-hidden">
-          <ParliamentVisualization
-            mps={currentMPs}
-            layout={layout}
-            onMPClick={handleMPClick}
-            filterParty={selectedParties}
-            filterVote={selectedVotes}
-            highlightedMPId={highlightedMP?.id}
-            highlightedMPIds={selectedMPsForSearch.map((mp) => mp.id)}
-          />
-        </div>
-
-        <PartyLegend mps={currentMPs} />
-
-        <div className="text-center text-sm text-muted-foreground space-y-2">
-          <p>คลิกที่จุดเพื่อดูประวัติการโหวตของ MP • สีของจุดแสดงพรรคการเมือง • ไอคอนแสดงการโหวต</p>
-          <div className="flex items-center justify-center gap-6">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-success flex items-center justify-center">
-                <span className="text-[8px] text-white">✓</span>
+                <VoterSearch mps={currentMPs} selectedMPs={selectedMPsForSearch} onMPsChange={setSelectedMPsForSearch} />
               </div>
-              <span>เห็นด้วย</span>
+
+              <VoteBarChart
+                mps={filteredMPsForChart}
+                orientation="horizontal"
+                selectedVoteFilter={voteFilterFromChart}
+                onVoteClick={handleVoteFilterFromChart}
+              />
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-destructive flex items-center justify-center">
-                <span className="text-[8px] text-white">✕</span>
+          </div>
+
+          {/* Right Main Content */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 p-4 overflow-auto">
+              <div className="h-full flex flex-col gap-4">
+                <div className="flex-1 bg-card rounded-lg border shadow-sm overflow-hidden min-h-0">
+                  <ParliamentVisualization
+                    mps={currentMPs}
+                    layout={layout}
+                    onMPClick={handleMPClick}
+                    filterParty={selectedParties}
+                    filterVote={selectedVotes}
+                    highlightedMPId={highlightedMP?.id}
+                    highlightedMPIds={selectedMPsForSearch.map((mp) => mp.id)}
+                  />
+                </div>
+
+                <PartyLegend mps={currentMPs} />
+
+                <div className="text-center text-sm text-muted-foreground space-y-2">
+                  <p>คลิกที่จุดเพื่อดูประวัติการโหวตของ MP • สีของจุดแสดงพรรคการเมือง • ไอคอนแสดงการโหวต</p>
+                  <div className="flex items-center justify-center gap-6">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-success flex items-center justify-center">
+                        <span className="text-[8px] text-white">✓</span>
+                      </div>
+                      <span>เห็นด้วย</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-destructive flex items-center justify-center">
+                        <span className="text-[8px] text-white">✕</span>
+                      </div>
+                      <span>ไม่เห็นด้วย</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-abstain flex items-center justify-center">
+                        <span className="text-[8px] text-white">−</span>
+                      </div>
+                      <span>งดออกเสียง</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <span>ไม่เห็นด้วย</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-abstain flex items-center justify-center">
-                <span className="text-[8px] text-white">−</span>
-              </div>
-              <span>งดออกเสียง</span>
             </div>
           </div>
         </div>

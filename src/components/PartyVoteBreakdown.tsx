@@ -68,21 +68,21 @@ const PartyVoteBreakdown = ({ mps }: PartyVoteBreakdownProps) => {
               <div className="h-5 bg-muted rounded-sm overflow-hidden flex">
                 {stat.agree > 0 && (
                   <div
-                    className="bg-success transition-all duration-300 flex items-center justify-center relative group"
+                    className="bg-vote-agree transition-all duration-300 flex items-center justify-center relative group"
                     style={{ width: `${(stat.agree / stat.total) * 100}%` }}
                   >
                     {(stat.agree / stat.total) * 100 > 8 && (
-                      <span className="text-xs font-medium text-success-foreground">{stat.agree}</span>
+                      <span className="text-xs font-medium text-vote-agree-foreground">{stat.agree}</span>
                     )}
                   </div>
                 )}
                 {stat.disagree > 0 && (
                   <div
-                    className="bg-destructive transition-all duration-300 flex items-center justify-center relative group"
+                    className="bg-vote-disagree transition-all duration-300 flex items-center justify-center relative group"
                     style={{ width: `${(stat.disagree / stat.total) * 100}%` }}
                   >
                     {(stat.disagree / stat.total) * 100 > 8 && (
-                      <span className="text-xs font-medium text-destructive-foreground">{stat.disagree}</span>
+                      <span className="text-xs font-medium text-vote-disagree-foreground">{stat.disagree}</span>
                     )}
                   </div>
                 )}
@@ -101,11 +101,11 @@ const PartyVoteBreakdown = ({ mps }: PartyVoteBreakdownProps) => {
               {/* Legend */}
               <div className="flex gap-3 text-xs">
                 <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 rounded-sm bg-success" />
+                  <div className="w-2 h-2 rounded-sm bg-vote-agree" />
                   <span className="text-muted-foreground">เห็นด้วย {stat.agree}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 rounded-sm bg-destructive" />
+                  <div className="w-2 h-2 rounded-sm bg-vote-disagree" />
                   <span className="text-muted-foreground">ไม่เห็นด้วย {stat.disagree}</span>
                 </div>
                 <div className="flex items-center gap-1">

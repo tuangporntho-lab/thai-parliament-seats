@@ -65,7 +65,7 @@ const PartyVoteBreakdown = ({ mps }: PartyVoteBreakdownProps) => {
               </div>
 
               {/* Stacked bar chart */}
-              <div className="h-8 bg-muted rounded-sm overflow-hidden flex">
+              <div className="h-5 bg-muted rounded-sm overflow-hidden flex">
                 {stat.agree > 0 && (
                   <div
                     className="bg-success transition-all duration-300 flex items-center justify-center relative group"

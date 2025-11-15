@@ -28,6 +28,12 @@ const Index = () => {
 
   const parties = Array.from(new Set(currentMPs.map((mp) => mp.party)));
 
+  // Filter MPs for vote distribution based on selected party
+  const filteredMPsForChart = useMemo(() => {
+    if (selectedParty === "all") return currentMPs;
+    return currentMPs.filter((mp) => mp.party === selectedParty);
+  }, [currentMPs, selectedParty]);
+
   // Sync vote filter from chart with main vote filter
   const effectiveVoteFilter = (voteFilterFromChart || selectedVote) as VoteType | "all";
 
@@ -88,7 +94,7 @@ const Index = () => {
         />
 
         <VoteBarChart
-          mps={currentMPs}
+          mps={filteredMPsForChart}
           orientation="horizontal"
           selectedVoteFilter={voteFilterFromChart}
           onVoteClick={handleVoteFilterFromChart}

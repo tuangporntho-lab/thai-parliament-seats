@@ -97,59 +97,56 @@ const ParliamentVisualization = ({
   const calculateSemicirclePosition = (index: number, total: number) => {
     const rows = 12; // จำนวนแถวทั้งหมด
 
-    // คำนวณจำนวนที่นั่งในแต่ละแถว (แถวในมีน้อย แถวนอกมีมาก)
+    // คำนวณจำนวนที่นั่งในแต่ละแถว
     const seatsPerRowArray: number[] = [];
     let totalSeatsAllocated = 0;
 
-    // เริ่มที่ 25 ที่นั่ง, เพิ่มทีละ 3 ในแต่ละแถว
     for (let i = 0; i < rows; i++) {
-      const seatsInThisRow = 25 + i * 3; // แถว 0: 25, แถว 1: 28, แถว 2: 31...
+      const seatsInThisRow = 25 + i * 3;
       seatsPerRowArray.push(seatsInThisRow);
       totalSeatsAllocated += seatsInThisRow;
     }
 
-    // ปรับจำนวนที่นั่งในแถวสุดท้ายให้ครบจำนวนทั้งหมด
     const diff = total - totalSeatsAllocated;
     seatsPerRowArray[rows - 1] += diff;
 
-    // หาว่าที่นั่งปัจจุบันอยู่แถวไหน
-    let currentRow = 0;
-    let seatsBeforeRow = 0;
-    let accumulatedSeats = 0;
+    // สร้าง array ของตำแหน่งทั้งหมด เรียงตามมุม (ซ้ายไปขวา) แล้วค่อยเรียงตามแถว (ในไปนอก)
+    const positions: Array<{ angle: number; row: number; indexInRow: number }> = [];
 
-    for (let i = 0; i < rows; i++) {
-      accumulatedSeats += seatsPerRowArray[i];
-      if (index < accumulatedSeats) {
-        currentRow = i;
-        break;
+    for (let row = 0; row < rows; row++) {
+      const totalInRow = seatsPerRowArray[row];
+      const startAngle = Math.PI;
+      const endAngle = 0;
+      const angleStep = (startAngle - endAngle) / (totalInRow > 1 ? totalInRow - 1 : 1);
+
+      for (let seatInRow = 0; seatInRow < totalInRow; seatInRow++) {
+        const angle = startAngle - angleStep * seatInRow;
+        positions.push({ angle, row, indexInRow: seatInRow });
       }
-      seatsBeforeRow += seatsPerRowArray[i];
     }
 
-    const seatInRow = index - seatsBeforeRow;
-    const totalInRow = seatsPerRowArray[currentRow];
+    // เรียงตามมุม (ซ้ายไปขวา) จากนั้นเรียงตามแถว (ในไปนอก)
+    positions.sort((a, b) => {
+      const angleDiff = b.angle - a.angle; // มุมมากไปน้อย (ซ้ายไปขวา)
+      if (Math.abs(angleDiff) > 0.01) return angleDiff;
+      return a.row - b.row; // แถวน้อยไปมาก (ในไปนอก)
+    });
 
-    // คำนวณรัศมีแต่ละแถว
+    const pos = positions[index];
+
+    // คำนวณรัศมี
     const baseRadius = 20;
     const radiusIncrement = 2.3;
-    const radius = baseRadius + currentRow * radiusIncrement;
-
-    // มุมเริ่มต้นและมุมสิ้นสุด (ครึ่งวงกลม)
-    const startAngle = Math.PI; // ซ้ายสุด (180°)
-    const endAngle = 0; // ขวาสุด (0°)
-
-    // คำนวณมุมของแต่ละที่นั่งในแถว
-    const angleStep = (startAngle - endAngle) / (totalInRow > 1 ? totalInRow - 1 : 1);
-    const angle = startAngle - angleStep * seatInRow;
+    const radius = baseRadius + pos.row * radiusIncrement;
 
     // คำนวณตำแหน่ง x, y
     const centerX = 50;
     const centerY = 50;
 
-    const x = centerX + Math.cos(angle) * radius;
-    const y = centerY - Math.sin(angle) * radius;
+    const x = centerX + Math.cos(pos.angle) * radius;
+    const y = centerY - Math.sin(pos.angle) * radius;
 
-    return { x: `${x}%`, y: `${y}%`, row: currentRow };
+    return { x: `${x}%`, y: `${y}%`, row: pos.row };
   };
 
   const renderSeat = (mp: MP, index: number) => {

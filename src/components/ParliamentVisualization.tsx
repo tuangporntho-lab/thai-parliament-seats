@@ -35,11 +35,17 @@ const ParliamentVisualization = ({
     return partyMatch && voteMatch;
   });
 
-  // Sort MPs by party for better visualization grouping
+  // Count MPs per party
+  const partyCount = mps.reduce((acc, mp) => {
+    acc[mp.party] = (acc[mp.party] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Sort MPs by party size (largest to smallest), then by vote type
   const sortedMPs = [...mps].sort((a, b) => {
-    // First sort by party
-    const partyCompare = a.party.localeCompare(b.party);
-    if (partyCompare !== 0) return partyCompare;
+    // First sort by party size (descending)
+    const countDiff = partyCount[b.party] - partyCount[a.party];
+    if (countDiff !== 0) return countDiff;
     // Then by vote type
     const voteOrder = { agree: 0, disagree: 1, abstain: 2, "no-vote": 3, absent: 4 };
     return voteOrder[a.vote] - voteOrder[b.vote];

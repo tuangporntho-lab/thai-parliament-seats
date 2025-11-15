@@ -60,16 +60,6 @@ const ParliamentVisualization = ({
     if (orderA !== orderB) return orderA - orderB;
 
     // Then by vote type
-    const voteOrder = { agree: 0, disagree: 1, abstain: 2 };
-    return voteOrder[a.vote] - voteOrder[b.vote];
-  });
-
-  // Sort MPs by party for better visualization grouping
-  const sortedMPs = [...mps].sort((a, b) => {
-    // First sort by party
-    const partyCompare = a.party.localeCompare(b.party);
-    if (partyCompare !== 0) return partyCompare;
-    // Then by vote type
     const voteOrder = { agree: 0, disagree: 1, abstain: 2, "no-vote": 3, absent: 4 };
     return voteOrder[a.vote] - voteOrder[b.vote];
   });

@@ -32,7 +32,7 @@ All colors MUST be HSL.
     --success: 206 38% 21%;
     --success-foreground: 0 0% 100%;
 
-    --destructive: 200 38% 78%;
+    --destructive: 0 0% 100%;
     --destructive-foreground: 206 38% 21%;
 
     --abstain: 215 16% 47%;
@@ -98,7 +98,7 @@ All colors MUST be HSL.
     --success: 206 38% 21%;
     --success-foreground: 0 0% 100%;
 
-    --destructive: 200 38% 78%;
+    --destructive: 0 0% 100%;
     --destructive-foreground: 206 38% 21%;
 
     --abstain: 215 20% 65%;

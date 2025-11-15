@@ -29,11 +29,11 @@ All colors MUST be HSL.
     --accent: 199 89% 48%;
     --accent-foreground: 0 0% 100%;
 
-    --success: 142 76% 36%;
+    --success: 206 38% 21%;
     --success-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 200 38% 78%;
+    --destructive-foreground: 206 38% 21%;
 
     --abstain: 215 16% 47%;
     --abstain-foreground: 0 0% 100%;
@@ -95,11 +95,11 @@ All colors MUST be HSL.
     --accent: 199 89% 48%;
     --accent-foreground: 0 0% 100%;
 
-    --success: 142 76% 36%;
+    --success: 206 38% 21%;
     --success-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 200 38% 78%;
+    --destructive-foreground: 206 38% 21%;
 
     --abstain: 215 20% 65%;
     --abstain-foreground: 222 47% 11%;

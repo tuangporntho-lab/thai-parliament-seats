@@ -1,32 +1,27 @@
-import { MP } from '@/types/parliament';
-import { Card } from '@/components/ui/card';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { Check, X, Minus } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { MP } from "@/types/parliament";
+import { Card } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Check, X, Minus } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface VoteBarChartProps {
   mps: MP[];
-  orientation?: 'horizontal' | 'vertical';
+  orientation?: "horizontal" | "vertical";
   selectedVoteFilter?: string | null;
   onVoteClick?: (voteType: string | null) => void;
 }
 
-const VoteBarChart = ({ mps, orientation = 'horizontal', selectedVoteFilter, onVoteClick }: VoteBarChartProps) => {
+const VoteBarChart = ({ mps, orientation = "horizontal", selectedVoteFilter, onVoteClick }: VoteBarChartProps) => {
   const total = mps.length;
-  const agreeCount = mps.filter((mp) => mp.vote === 'agree').length;
-  const disagreeCount = mps.filter((mp) => mp.vote === 'disagree').length;
-  const abstainCount = mps.filter((mp) => mp.vote === 'abstain').length;
+  const agreeCount = mps.filter((mp) => mp.vote === "agree").length;
+  const disagreeCount = mps.filter((mp) => mp.vote === "disagree").length;
+  const abstainCount = mps.filter((mp) => mp.vote === "abstain").length;
 
   const agreePercent = (agreeCount / total) * 100;
   const disagreePercent = (disagreeCount / total) * 100;
   const abstainPercent = (abstainCount / total) * 100;
 
-  const isHorizontal = orientation === 'horizontal';
+  const isHorizontal = orientation === "horizontal";
 
   const handleVoteClick = (voteType: string) => {
     if (onVoteClick) {
@@ -41,12 +36,18 @@ const VoteBarChart = ({ mps, orientation = 'horizontal', selectedVoteFilter, onV
         Vote Distribution
         {selectedVoteFilter && (
           <span className="text-sm font-normal text-muted-foreground ml-2">
-            (กรอง: {selectedVoteFilter === 'agree' ? 'เห็นด้วย' : selectedVoteFilter === 'disagree' ? 'ไม่เห็นด้วย' : 'งดออกเสียง'})
+            (กรอง:{" "}
+            {selectedVoteFilter === "agree"
+              ? "เห็นด้วย"
+              : selectedVoteFilter === "disagree"
+                ? "ไม่เห็นด้วย"
+                : "งดออกเสียง"}
+            )
           </span>
         )}
       </h3>
-      
-      <div className={`flex ${isHorizontal ? 'flex-row h-16' : 'flex-col w-16'} rounded-lg overflow-hidden`}>
+
+      <div className={`flex ${isHorizontal ? "flex-row h-8" : "flex-col w-8"} rounded-lg overflow-hidden`}>
         {/* Agree Section */}
         <TooltipProvider>
           <Tooltip>
@@ -54,12 +55,12 @@ const VoteBarChart = ({ mps, orientation = 'horizontal', selectedVoteFilter, onV
               <div
                 className={cn(
                   "bg-success hover:opacity-80 transition-all cursor-pointer flex items-center justify-center",
-                  selectedVoteFilter === 'agree' && "ring-4 ring-primary"
+                  selectedVoteFilter === "agree" && "ring-4 ring-primary",
                 )}
                 style={{
-                  [isHorizontal ? 'width' : 'height']: `${agreePercent}%`,
+                  [isHorizontal ? "width" : "height"]: `${agreePercent}%`,
                 }}
-                onClick={() => handleVoteClick('agree')}
+                onClick={() => handleVoteClick("agree")}
               >
                 {agreePercent > 15 && (
                   <div className="flex items-center gap-2 text-success-foreground">
@@ -89,12 +90,12 @@ const VoteBarChart = ({ mps, orientation = 'horizontal', selectedVoteFilter, onV
               <div
                 className={cn(
                   "bg-destructive hover:opacity-80 transition-all cursor-pointer flex items-center justify-center",
-                  selectedVoteFilter === 'disagree' && "ring-4 ring-primary"
+                  selectedVoteFilter === "disagree" && "ring-4 ring-primary",
                 )}
                 style={{
-                  [isHorizontal ? 'width' : 'height']: `${disagreePercent}%`,
+                  [isHorizontal ? "width" : "height"]: `${disagreePercent}%`,
                 }}
-                onClick={() => handleVoteClick('disagree')}
+                onClick={() => handleVoteClick("disagree")}
               >
                 {disagreePercent > 15 && (
                   <div className="flex items-center gap-2 text-destructive-foreground">
@@ -124,12 +125,12 @@ const VoteBarChart = ({ mps, orientation = 'horizontal', selectedVoteFilter, onV
               <div
                 className={cn(
                   "bg-abstain hover:opacity-80 transition-all cursor-pointer flex items-center justify-center",
-                  selectedVoteFilter === 'abstain' && "ring-4 ring-primary"
+                  selectedVoteFilter === "abstain" && "ring-4 ring-primary",
                 )}
                 style={{
-                  [isHorizontal ? 'width' : 'height']: `${abstainPercent}%`,
+                  [isHorizontal ? "width" : "height"]: `${abstainPercent}%`,
                 }}
-                onClick={() => handleVoteClick('abstain')}
+                onClick={() => handleVoteClick("abstain")}
               >
                 {abstainPercent > 15 && (
                   <div className="flex items-center gap-2 text-abstain-foreground">

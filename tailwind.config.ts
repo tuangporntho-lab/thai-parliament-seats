@@ -43,6 +43,14 @@ export default {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
         },
+        "vote-agree": {
+          DEFAULT: "hsl(var(--vote-agree))",
+          foreground: "hsl(var(--vote-agree-foreground))",
+        },
+        "vote-disagree": {
+          DEFAULT: "hsl(var(--vote-disagree))",
+          foreground: "hsl(var(--vote-disagree-foreground))",
+        },
         abstain: {
           DEFAULT: "hsl(var(--abstain))",
           foreground: "hsl(var(--abstain-foreground))",

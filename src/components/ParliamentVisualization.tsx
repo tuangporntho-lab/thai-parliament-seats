@@ -95,25 +95,56 @@ const ParliamentVisualization = ({
   };
 
   const calculateSemicirclePosition = (index: number, total: number) => {
-    const rows = 12; // จำนวนแถวทั้งหมด (วงใน = 0, วงนอก = 11)
-    const seatsPerColumn = rows; // แต่ละแกนมี 12 ที่นั่ง (จากวงในไปวงนอก)
+    // สร้าง Fibonacci sequence สำหรับจำนวนที่นั่งในแต่ละวง
+    const generateFibonacci = (n: number): number[] => {
+      const fib = [1, 1];
+      while (fib.length < n) {
+        fib.push(fib[fib.length - 1] + fib[fib.length - 2]);
+      }
+      return fib;
+    };
 
-    // หาว่าที่นั่งนี้อยู่แกนไหนและวงไหน
-    const columnIndex = Math.floor(index / seatsPerColumn);
-    const rowIndex = index % seatsPerColumn; // 0 = วงในสุด, 11 = วงนอกสุด
+    // คำนวณจำนวนวงที่ต้องการให้ครอบคลุม MPs ทั้งหมด
+    const fibonacci = generateFibonacci(15); // สร้างเพียงพอสำหรับ MPs ทั้งหมด
+    let totalSeats = 0;
+    let requiredRows = 0;
+    
+    for (let i = 0; i < fibonacci.length; i++) {
+      totalSeats += fibonacci[i];
+      requiredRows++;
+      if (totalSeats >= total) break;
+    }
 
-    // คำนวณจำนวนแกนทั้งหมด
-    const totalColumns = Math.ceil(total / seatsPerColumn);
+    // หาว่า index นี้อยู่ในวงไหนและตำแหน่งไหนในวงนั้น
+    let currentIndex = index;
+    let rowIndex = 0;
+    let positionInRow = 0;
+    let seatsBeforeThisRow = 0;
 
-    // คำนวณมุมของแต่ละแกน (เริ่มจากซ้าย 180° ไปขวา 0°)
+    for (let i = 0; i < requiredRows; i++) {
+      if (currentIndex < fibonacci[i]) {
+        rowIndex = i;
+        positionInRow = currentIndex;
+        break;
+      }
+      seatsBeforeThisRow += fibonacci[i];
+      currentIndex -= fibonacci[i];
+    }
+
+    const seatsInThisRow = fibonacci[rowIndex];
+
+    // คำนวณมุมของที่นั่งในวงนี้ (กระจายเท่าๆ กันใน 180°)
     const startAngle = Math.PI; // 180° (ซ้ายสุด)
     const endAngle = 0; // 0° (ขวาสุด)
-    const angleStep = (startAngle - endAngle) / (totalColumns > 1 ? totalColumns - 1 : 1);
-    const angle = startAngle - angleStep * columnIndex;
+    const angleRange = startAngle - endAngle;
+    
+    // กระจายที่นั่งในวงนี้อย่างสม่ำเสมอ
+    const angleStep = seatsInThisRow > 1 ? angleRange / (seatsInThisRow - 1) : 0;
+    const angle = startAngle - angleStep * positionInRow;
 
     // คำนวณรัศมีตามวง (วงใน -> วงนอก)
-    const baseRadius = 30;
-    const radiusIncrement = 2.3;
+    const baseRadius = 25;
+    const radiusIncrement = 3.2;
     const radius = baseRadius + rowIndex * radiusIncrement;
 
     // คำนวณตำแหน่ง x, y

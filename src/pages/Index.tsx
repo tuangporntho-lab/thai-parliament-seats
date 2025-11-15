@@ -117,7 +117,7 @@ const Index = () => {
             <div className="flex-1 p-4 overflow-auto">
               <div className="h-full flex flex-col gap-4">
                 {/* 20% - Vote Distribution */}
-                <div className="flex-[0.2] bg-card rounded-lg border shadow-sm p-4 overflow-auto">
+                <div className="flex-[0.2] overflow-hidden">
                   <VoteBarChart
                     mps={filteredMPsForChart}
                     orientation="horizontal"

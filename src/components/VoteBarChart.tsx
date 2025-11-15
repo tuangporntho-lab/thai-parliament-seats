@@ -31,8 +31,8 @@ const VoteBarChart = ({ mps, orientation = "horizontal", selectedVoteFilter, onV
   };
 
   return (
-    <Card className="p-6">
-      <h3 className="text-lg font-semibold mb-4">
+    <Card className="h-full flex flex-col p-4">
+      <h3 className="text-base font-semibold mb-3 flex-shrink-0">
         Vote Distribution
         {selectedVoteFilter && (
           <span className="text-sm font-normal text-muted-foreground ml-2">
@@ -47,7 +47,7 @@ const VoteBarChart = ({ mps, orientation = "horizontal", selectedVoteFilter, onV
         )}
       </h3>
 
-      <div className={`flex ${isHorizontal ? "flex-row h-8" : "flex-col w-8"} rounded-lg overflow-hidden`}>
+      <div className={`flex ${isHorizontal ? "flex-row h-6" : "flex-col w-6"} rounded-lg overflow-hidden flex-shrink-0`}>
         {/* Agree Section */}
         <TooltipProvider>
           <Tooltip>
@@ -155,17 +155,17 @@ const VoteBarChart = ({ mps, orientation = "horizontal", selectedVoteFilter, onV
       </div>
 
       {/* Legend */}
-      <div className="flex items-center justify-center gap-6 mt-4 text-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-success" />
+      <div className="flex items-center justify-center gap-4 mt-3 text-xs flex-shrink-0">
+        <div className="flex items-center gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-success" />
           <span>เห็นด้วย: {agreeCount}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-destructive" />
+        <div className="flex items-center gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-destructive" />
           <span>ไม่เห็นด้วย: {disagreeCount}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-abstain" />
+        <div className="flex items-center gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-abstain" />
           <span>งดออกเสียง: {abstainCount}</span>
         </div>
       </div>

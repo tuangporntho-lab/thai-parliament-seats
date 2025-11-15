@@ -35,12 +35,6 @@ All colors MUST be HSL.
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --vote-agree: 210 100% 65%;
-    --vote-agree-foreground: 0 0% 100%;
-
-    --vote-disagree: 220 80% 45%;
-    --vote-disagree-foreground: 0 0% 100%;
-
     --abstain: 215 16% 47%;
     --abstain-foreground: 0 0% 100%;
 
@@ -106,12 +100,6 @@ All colors MUST be HSL.
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-
-    --vote-agree: 210 90% 70%;
-    --vote-agree-foreground: 222 47% 11%;
-
-    --vote-disagree: 220 70% 55%;
-    --vote-disagree-foreground: 0 0% 100%;
 
     --abstain: 215 20% 65%;
     --abstain-foreground: 222 47% 11%;

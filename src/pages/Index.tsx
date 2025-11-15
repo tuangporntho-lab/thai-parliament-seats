@@ -92,15 +92,6 @@ const Index = () => {
           canGoNext={currentSessionIndex < mockSessions.length - 1}
         />
 
-        <VoteBarChart
-          mps={filteredMPsForChart}
-          orientation="horizontal"
-          selectedVoteFilter={voteFilterFromChart}
-          onVoteClick={handleVoteFilterFromChart}
-        />
-
-        <PartyLegend mps={currentMPs} />
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <FilterControls
             parties={parties}
@@ -115,6 +106,13 @@ const Index = () => {
           <VoterSearch mps={currentMPs} selectedMPs={selectedMPsForSearch} onMPsChange={setSelectedMPsForSearch} />
         </div>
 
+        <VoteBarChart
+          mps={filteredMPsForChart}
+          orientation="horizontal"
+          selectedVoteFilter={voteFilterFromChart}
+          onVoteClick={handleVoteFilterFromChart}
+        />
+
         <div className="bg-card rounded-lg border shadow-sm h-[550px] overflow-hidden">
           <ParliamentVisualization
             mps={currentMPs}
@@ -126,6 +124,8 @@ const Index = () => {
             highlightedMPIds={selectedMPsForSearch.map((mp) => mp.id)}
           />
         </div>
+
+        <PartyLegend mps={currentMPs} />
 
         <div className="text-center text-sm text-muted-foreground space-y-2">
           <p>คลิกที่จุดเพื่อดูประวัติการโหวตของ MP • สีของจุดแสดงพรรคการเมือง • ไอคอนแสดงการโหวต</p>

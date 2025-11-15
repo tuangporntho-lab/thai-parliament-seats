@@ -34,6 +34,8 @@ const FilterControls = ({
     { value: 'agree', label: 'Agree' },
     { value: 'disagree', label: 'Disagree' },
     { value: 'abstain', label: 'Abstain' },
+    { value: 'no-vote', label: 'No Vote' },
+    { value: 'absent', label: 'Absent' },
   ];
 
   const toggleParty = (party: string) => {

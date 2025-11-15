@@ -94,62 +94,66 @@ const ParliamentVisualization = ({
     }
   };
 
-  const calculateSemicirclePosition = (index: number, total: number, party: string) => {
-    const rows = 12;
-    
-    // จัดกลุ่ม MPs ตามพรรค
-    const mpsByParty = sortedMPs.reduce((acc, mp) => {
-      if (!acc[mp.party]) acc[mp.party] = [];
-      acc[mp.party].push(mp);
-      return acc;
-    }, {} as Record<string, MP[]>);
-    
-    const parties = Object.keys(mpsByParty);
-    const currentMP = sortedMPs[index];
-    const currentParty = currentMP.party;
-    const partyIndex = parties.indexOf(currentParty);
-    const mpsInParty = mpsByParty[currentParty];
-    const indexInParty = mpsInParty.findIndex(mp => mp.id === currentMP.id);
-    
-    // คำนวณมุมเริ่มต้นและมุมสิ้นสุดสำหรับพรรคนี้
-    const startAngle = Math.PI;
-    const totalAngleRange = Math.PI;
-    
-    let angleStart = startAngle;
-    for (let i = 0; i < partyIndex; i++) {
-      const partyMembers = mpsByParty[parties[i]].length;
-      const partyAngleRange = (partyMembers / total) * totalAngleRange;
-      angleStart -= partyAngleRange;
+  const calculateSemicirclePosition = (index: number, total: number) => {
+    const rows = 12; // จำนวนแถวทั้งหมด
+
+    // คำนวณจำนวนที่นั่งในแต่ละแถว
+    const seatsPerRowArray: number[] = [];
+    let totalSeatsAllocated = 0;
+
+    for (let i = 0; i < rows; i++) {
+      const seatsInThisRow = 25 + i * 3;
+      seatsPerRowArray.push(seatsInThisRow);
+      totalSeatsAllocated += seatsInThisRow;
     }
-    
-    const partyAngleRange = (mpsInParty.length / total) * totalAngleRange;
-    
-    // คำนวณตำแหน่งภายในพรรค - เรียงจากวงในไปวงนอกตามมุม
-    const cols = Math.ceil(mpsInParty.length / rows);
-    const col = Math.floor(indexInParty / rows);
-    const row = indexInParty % rows;
-    
-    const anglePerCol = partyAngleRange / (cols > 1 ? cols : 1);
-    const angle = angleStart - (col * anglePerCol);
-    
+
+    const diff = total - totalSeatsAllocated;
+    seatsPerRowArray[rows - 1] += diff;
+
+    // สร้าง array ของตำแหน่งทั้งหมด เรียงตามมุม (ซ้ายไปขวา) แล้วค่อยเรียงตามแถว (ในไปนอก)
+    const positions: Array<{ angle: number; row: number; indexInRow: number }> = [];
+
+    for (let row = 0; row < rows; row++) {
+      const totalInRow = seatsPerRowArray[row];
+      const startAngle = Math.PI;
+      const endAngle = 0;
+      const angleStep = (startAngle - endAngle) / (totalInRow > 1 ? totalInRow - 1 : 1);
+
+      for (let seatInRow = 0; seatInRow < totalInRow; seatInRow++) {
+        const angle = startAngle - angleStep * seatInRow;
+        positions.push({ angle, row, indexInRow: seatInRow });
+      }
+    }
+
+    // เรียงตามมุม (ซ้ายไปขวา) จากนั้นเรียงตามแถว (ในไปนอก)
+    positions.sort((a, b) => {
+      const angleDiff = b.angle - a.angle; // มุมมากไปน้อย (ซ้ายไปขวา)
+      if (Math.abs(angleDiff) > 0.01) return angleDiff;
+      return a.row - b.row; // แถวน้อยไปมาก (ในไปนอก)
+    });
+
+    const pos = positions[index];
+
+    // คำนวณรัศมี
     const baseRadius = 20;
     const radiusIncrement = 2.3;
-    const radius = baseRadius + row * radiusIncrement;
-    
+    const radius = baseRadius + pos.row * radiusIncrement;
+
+    // คำนวณตำแหน่ง x, y
     const centerX = 50;
     const centerY = 50;
-    
-    const x = centerX + Math.cos(angle) * radius;
-    const y = centerY - Math.sin(angle) * radius;
-    
-    return { x: `${x}%`, y: `${y}%`, row };
+
+    const x = centerX + Math.cos(pos.angle) * radius;
+    const y = centerY - Math.sin(pos.angle) * radius;
+
+    return { x: `${x}%`, y: `${y}%`, row: pos.row };
   };
 
   const renderSeat = (mp: MP, index: number) => {
     const isFiltered = filteredMPs.some((m) => m.id === mp.id);
     const isHighlighted = highlightedMPId === mp.id || highlightedMPIds.includes(mp.id);
     const position =
-      layout === "semicircle" ? calculateSemicirclePosition(index, sortedMPs.length, mp.party) : { x: "0%", y: "0%", row: 0 };
+      layout === "semicircle" ? calculateSemicirclePosition(index, sortedMPs.length) : { x: "0%", y: "0%", row: 0 };
 
     const partyColor = getPartyColor(mp.party);
     const partyColorValue = getPartyColorValue(mp.party);

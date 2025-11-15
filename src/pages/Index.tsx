@@ -122,7 +122,8 @@ const Index = () => {
             onMPClick={handleMPClick}
             filterParty={selectedParties}
             filterVote={selectedVotes}
-            highlightedMPId={highlightedMP?.id || (selectedMPsForSearch.length > 0 ? selectedMPsForSearch[0].id : undefined)}
+            highlightedMPId={highlightedMP?.id}
+            highlightedMPIds={selectedMPsForSearch.map((mp) => mp.id)}
           />
         </div>
 

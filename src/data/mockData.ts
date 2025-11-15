@@ -16,7 +16,7 @@ const constituencies = [
   'Songkhla', 'Udon Thani', 'Chonburi', 'Nonthaburi', 'Rayong'
 ];
 
-const votes: VoteType[] = ['agree', 'disagree', 'abstain'];
+const votes: VoteType[] = ['agree', 'disagree', 'abstain', 'no-vote', 'absent'];
 
 // Define seat allocation for each party
 const seatAllocation = [

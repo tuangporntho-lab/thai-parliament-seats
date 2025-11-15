@@ -1,21 +1,4 @@
-const calculateSemicirclePosition = (index: number, total: number) => {
-  const rows = 12; // จำนวนแถวทั้งหมด
-
-  // คำนวณจำนวนที่นั่งในแต่ละแถว
-  const seatsPerRowArray: number[] = [];
-  let totalSeatsAllocated = 0;
-
-  for (let i = 0; i < rows; i++) {
-    const seatsInThisRow = 25 + i * 3;
-    seatsPerRowArray.push(seatsInThisRow);
-    totalSeatsAllocated += seatsInThisRow;
-  }
-
-  const diff = total - totalSeatsAllocated;
-  seatsPerRowArray[rows - 1] += diff;
-
-  // สร้าง array ของตำแหน่งทั้งหมด เรียงตามมุม (ซ้ายไปขวา) แล้วค่อยเรียงตามแถว (ในไปนอก)
-  const positiimport { useState } from "react";
+import { useState } from "react";
 import { MP, LayoutType, VoteType } from "@/types/parliament";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -52,22 +35,11 @@ const ParliamentVisualization = ({
     return partyMatch && voteMatch;
   });
 
-  // Count MPs per party
-  const partyCount = mps.reduce((acc, mp) => {
-    acc[mp.party] = (acc[mp.party] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  // Sort MPs by party size (largest to smallest), then by vote type
+  // Sort MPs by party for better visualization grouping
   const sortedMPs = [...mps].sort((a, b) => {
-    // First sort by party size (descending)
-    const countDiff = partyCount[b.party] - partyCount[a.party];
-    if (countDiff !== 0) return countDiff;
-    
-    // If same party size, sort by party name
+    // First sort by party
     const partyCompare = a.party.localeCompare(b.party);
     if (partyCompare !== 0) return partyCompare;
-    
     // Then by vote type
     const voteOrder = { agree: 0, disagree: 1, abstain: 2, "no-vote": 3, absent: 4 };
     return voteOrder[a.vote] - voteOrder[b.vote];
@@ -265,40 +237,4 @@ const ParliamentVisualization = ({
   );
 };
 
-export default ParliamentVisualization;ons: Array<{ angle: number; row: number; indexInRow: number }> = [];
-
-  for (let row = 0; row < rows; row++) {
-    const totalInRow = seatsPerRowArray[row];
-    const startAngle = Math.PI;
-    const endAngle = 0;
-    const angleStep = (startAngle - endAngle) / (totalInRow > 1 ? totalInRow - 1 : 1);
-
-    for (let seatInRow = 0; seatInRow < totalInRow; seatInRow++) {
-      const angle = startAngle - angleStep * seatInRow;
-      positions.push({ angle, row, indexInRow: seatInRow });
-    }
-  }
-
-  // เรียงตามมุม (ซ้ายไปขวา) จากนั้นเรียงตามแถว (ในไปนอก)
-  positions.sort((a, b) => {
-    const angleDiff = b.angle - a.angle; // มุมมากไปน้อย (ซ้ายไปขวา)
-    if (Math.abs(angleDiff) > 0.01) return angleDiff;
-    return a.row - b.row; // แถวน้อยไปมาก (ในไปนอก)
-  });
-
-  const pos = positions[index];
-
-  // คำนวณรัศมี
-  const baseRadius = 20;
-  const radiusIncrement = 2.3;
-  const radius = baseRadius + pos.row * radiusIncrement;
-
-  // คำนวณตำแหน่ง x, y
-  const centerX = 50;
-  const centerY = 50;
-
-  const x = centerX + Math.cos(pos.angle) * radius;
-  const y = centerY - Math.sin(pos.angle) * radius;
-
-  return { x: `${x}%`, y: `${y}%`, row: pos.row };
-};
+export default ParliamentVisualization;

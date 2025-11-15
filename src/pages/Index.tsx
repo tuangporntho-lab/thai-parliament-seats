@@ -109,13 +109,6 @@ const Index = () => {
 
                 <VoterSearch mps={currentMPs} selectedMPs={selectedMPsForSearch} onMPsChange={setSelectedMPsForSearch} />
               </div>
-
-              <VoteBarChart
-                mps={filteredMPsForChart}
-                orientation="horizontal"
-                selectedVoteFilter={voteFilterFromChart}
-                onVoteClick={handleVoteFilterFromChart}
-              />
             </div>
           </div>
 
@@ -123,6 +116,15 @@ const Index = () => {
           <div className="flex-1 flex flex-col overflow-hidden">
             <div className="flex-1 p-4 overflow-auto">
               <div className="h-full flex flex-col gap-4">
+                <div className="bg-card rounded-lg border shadow-sm p-4">
+                  <VoteBarChart
+                    mps={filteredMPsForChart}
+                    orientation="horizontal"
+                    selectedVoteFilter={voteFilterFromChart}
+                    onVoteClick={handleVoteFilterFromChart}
+                  />
+                </div>
+
                 <div className="flex-1 bg-card rounded-lg border shadow-sm overflow-hidden min-h-0">
                   <ParliamentVisualization
                     mps={currentMPs}

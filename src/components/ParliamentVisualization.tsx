@@ -25,6 +25,24 @@ const ParliamentVisualization = ({
 }: ParliamentVisualizationProps) => {
   const [hoveredMP, setHoveredMP] = useState<string | null>(null);
 
+  // กำหนดลำดับพรรคตามจำนวน ส.ส. จากมากไปน้อย
+  const partyOrder: { [key: string]: number } = {
+    "Pheu Thai Party": 0, // 143
+    "Bhumjaithai Party": 1, // 140
+    "United Thai Nation Party": 2, // 69
+    "Democrat Party": 3, // 36
+    "Move Forward Party": 4, // 25 (กล้าธรรม)
+    "Palang Pracharath Party": 5, // 25
+    "Thai Nation Development Party": 6, // 20 (ชาติไทยพัฒนา)
+    "Prachachat Party": 7, // 10
+    "Thai Sang Thai Party": 8, // 9
+    "Chart Pattana Party": 9, // 6 (ชาติพัฒนา)
+    "Thai Raksa Chart Party": 10, // 3 (ไทรวมพลัง)
+    "New Democracy Party": 11, // 2 (ประชาธิปไตยใหม่)
+    "Seri Ruam Thai Party": 12, // 1 (เสรีรวมไทย)
+    "Puentham Party": 13, // 1 (เป็นธรรม)
+    "Thai Liberal Party": 14, // 1 (ไทยก้าวหน้า)
+  };
   const filteredMPs = mps.filter((mp) => {
     const parties = Array.isArray(filterParty) ? filterParty : filterParty ? [filterParty] : [];
     const votes = Array.isArray(filterVote) ? filterVote : filterVote ? [filterVote] : [];
@@ -33,6 +51,17 @@ const ParliamentVisualization = ({
     const voteMatch = votes.length === 0 || votes.includes(mp.vote);
 
     return partyMatch && voteMatch;
+  });
+  // Sort MPs by party for better visualization grouping
+  const sortedMPs = [...mps].sort((a, b) => {
+    // First sort by party order
+    const orderA = partyOrder[a.party] ?? 999;
+    const orderB = partyOrder[b.party] ?? 999;
+    if (orderA !== orderB) return orderA - orderB;
+
+    // Then by vote type
+    const voteOrder = { agree: 0, disagree: 1, abstain: 2 };
+    return voteOrder[a.vote] - voteOrder[b.vote];
   });
 
   // Sort MPs by party for better visualization grouping

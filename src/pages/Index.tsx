@@ -74,7 +74,7 @@ const Index = () => {
             <Building2 className="w-8 h-8 text-primary" />
             <div>
               <h1 className="text-2xl font-bold">Parliament Voting Visualization</h1>
-              <p className="text-sm text-muted-foreground">Thailand House of Representatives - 500 Seats</p>
+              <p className="text-sm text-muted-foreground">Thailand House of Representatives</p>
             </div>
           </div>
         </div>
@@ -107,7 +107,11 @@ const Index = () => {
                   onLayoutChange={setLayout}
                 />
 
-                <VoterSearch mps={currentMPs} selectedMPs={selectedMPsForSearch} onMPsChange={setSelectedMPsForSearch} />
+                <VoterSearch
+                  mps={currentMPs}
+                  selectedMPs={selectedMPsForSearch}
+                  onMPsChange={setSelectedMPsForSearch}
+                />
               </div>
             </div>
           </div>

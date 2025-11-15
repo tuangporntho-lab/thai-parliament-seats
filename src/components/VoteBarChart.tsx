@@ -54,7 +54,7 @@ const VoteBarChart = ({ mps, orientation = "horizontal", selectedVoteFilter, onV
             <TooltipTrigger asChild>
               <div
                 className={cn(
-                  "bg-success hover:opacity-80 transition-all cursor-pointer flex items-center justify-center",
+                  "bg-success hover:opacity-80 transition-all cursor-pointer flex items-center justify-center border-[0.5px] border-border",
                   selectedVoteFilter === "agree" && "ring-4 ring-primary",
                 )}
                 style={{
@@ -89,7 +89,7 @@ const VoteBarChart = ({ mps, orientation = "horizontal", selectedVoteFilter, onV
             <TooltipTrigger asChild>
               <div
                 className={cn(
-                  "bg-destructive hover:opacity-80 transition-all cursor-pointer flex items-center justify-center",
+                  "bg-destructive hover:opacity-80 transition-all cursor-pointer flex items-center justify-center border-[0.5px] border-border",
                   selectedVoteFilter === "disagree" && "ring-4 ring-primary",
                 )}
                 style={{
@@ -124,7 +124,7 @@ const VoteBarChart = ({ mps, orientation = "horizontal", selectedVoteFilter, onV
             <TooltipTrigger asChild>
               <div
                 className={cn(
-                  "bg-abstain hover:opacity-80 transition-all cursor-pointer flex items-center justify-center",
+                  "bg-abstain hover:opacity-80 transition-all cursor-pointer flex items-center justify-center border-[0.5px] border-border",
                   selectedVoteFilter === "abstain" && "ring-4 ring-primary",
                 )}
                 style={{

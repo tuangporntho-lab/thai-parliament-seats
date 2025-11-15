@@ -51,6 +51,22 @@ const PartyVoteBreakdown = ({ mps }: PartyVoteBreakdownProps) => {
       <div className="p-4 border-b flex-shrink-0">
         <h3 className="font-semibold text-lg">การโหวตแยกตามพรรค</h3>
         <p className="text-xs text-muted-foreground mt-1">รายละเอียดการโหวตของแต่ละพรรคการเมือง</p>
+        
+        {/* Legend - แสดงครั้งเดียวด้านบน */}
+        <div className="flex gap-3 text-xs mt-3">
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-sm bg-success" />
+            <span className="text-muted-foreground">เห็นด้วย</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-sm bg-destructive border-[0.5px] border-border" />
+            <span className="text-muted-foreground">ไม่เห็นด้วย</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-sm bg-abstain" />
+            <span className="text-muted-foreground">งดออกเสียง</span>
+          </div>
+        </div>
       </div>
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-4">
@@ -68,7 +84,7 @@ const PartyVoteBreakdown = ({ mps }: PartyVoteBreakdownProps) => {
               <div className="h-5 bg-muted rounded-sm overflow-hidden flex">
                 {stat.agree > 0 && (
                   <div
-                    className="bg-success transition-all duration-300 flex items-center justify-center relative group"
+                    className="bg-success transition-all duration-300 flex items-center justify-center relative group border-[0.5px] border-border"
                     style={{ width: `${(stat.agree / stat.total) * 100}%` }}
                   >
                     {(stat.agree / stat.total) * 100 > 8 && (
@@ -78,7 +94,7 @@ const PartyVoteBreakdown = ({ mps }: PartyVoteBreakdownProps) => {
                 )}
                 {stat.disagree > 0 && (
                   <div
-                    className="bg-destructive transition-all duration-300 flex items-center justify-center relative group"
+                    className="bg-destructive transition-all duration-300 flex items-center justify-center relative group border-[0.5px] border-border"
                     style={{ width: `${(stat.disagree / stat.total) * 100}%` }}
                   >
                     {(stat.disagree / stat.total) * 100 > 8 && (
@@ -88,7 +104,7 @@ const PartyVoteBreakdown = ({ mps }: PartyVoteBreakdownProps) => {
                 )}
                 {stat.abstain > 0 && (
                   <div
-                    className="bg-abstain transition-all duration-300 flex items-center justify-center relative group"
+                    className="bg-abstain transition-all duration-300 flex items-center justify-center relative group border-[0.5px] border-border"
                     style={{ width: `${(stat.abstain / stat.total) * 100}%` }}
                   >
                     {(stat.abstain / stat.total) * 100 > 8 && (
@@ -96,22 +112,6 @@ const PartyVoteBreakdown = ({ mps }: PartyVoteBreakdownProps) => {
                     )}
                   </div>
                 )}
-              </div>
-              
-              {/* Legend */}
-              <div className="flex gap-3 text-xs">
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 rounded-sm bg-success" />
-                  <span className="text-muted-foreground">เห็นด้วย {stat.agree}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 rounded-sm bg-destructive" />
-                  <span className="text-muted-foreground">ไม่เห็นด้วย {stat.disagree}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 rounded-sm bg-abstain" />
-                  <span className="text-muted-foreground">งดออกเสียง {stat.abstain}</span>
-                </div>
               </div>
             </div>
           ))}

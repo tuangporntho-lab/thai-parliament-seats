@@ -1,67 +1,189 @@
+import { useState } from 'react';
 import { VoteType, LayoutType } from '@/types/parliament';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Grid3x3, CircleDot } from 'lucide-react';
+import { Grid3x3, CircleDot, Check, ChevronsUpDown, X } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 interface FilterControlsProps {
   parties: string[];
-  selectedParty: string;
-  selectedVote: VoteType | 'all';
+  selectedParties: string[];
+  selectedVotes: VoteType[];
   layout: LayoutType;
-  onPartyChange: (party: string) => void;
-  onVoteChange: (vote: VoteType | 'all') => void;
+  onPartiesChange: (parties: string[]) => void;
+  onVotesChange: (votes: VoteType[]) => void;
   onLayoutChange: (layout: LayoutType) => void;
 }
 
 const FilterControls = ({
   parties,
-  selectedParty,
-  selectedVote,
+  selectedParties,
+  selectedVotes,
   layout,
-  onPartyChange,
-  onVoteChange,
+  onPartiesChange,
+  onVotesChange,
   onLayoutChange,
 }: FilterControlsProps) => {
+  const [partyOpen, setPartyOpen] = useState(false);
+  const [voteOpen, setVoteOpen] = useState(false);
+
+  const voteOptions: { value: VoteType; label: string }[] = [
+    { value: 'agree', label: 'Agree' },
+    { value: 'disagree', label: 'Disagree' },
+    { value: 'abstain', label: 'Abstain' },
+  ];
+
+  const toggleParty = (party: string) => {
+    if (selectedParties.includes(party)) {
+      onPartiesChange(selectedParties.filter((p) => p !== party));
+    } else {
+      onPartiesChange([...selectedParties, party]);
+    }
+  };
+
+  const toggleVote = (vote: VoteType) => {
+    if (selectedVotes.includes(vote)) {
+      onVotesChange(selectedVotes.filter((v) => v !== vote));
+    } else {
+      onVotesChange([...selectedVotes, vote]);
+    }
+  };
+
+  const clearParties = () => onPartiesChange([]);
+  const clearVotes = () => onVotesChange([]);
+
   return (
     <Card className="p-4">
       <div className="flex flex-wrap items-center gap-4">
-        <div className="flex-1 min-w-[200px]">
+        <div className="flex-1 min-w-[250px]">
           <label className="text-sm font-medium mb-2 block">Political Party</label>
-          <Select value={selectedParty} onValueChange={onPartyChange}>
-            <SelectTrigger>
-              <SelectValue placeholder="Filter by party" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Parties</SelectItem>
-              {parties.map((party) => (
-                <SelectItem key={party} value={party}>
-                  {party}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Popover open={partyOpen} onOpenChange={setPartyOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={partyOpen}
+                className="w-full justify-between h-auto min-h-[40px]"
+              >
+                <div className="flex flex-wrap gap-1 flex-1">
+                  {selectedParties.length === 0 ? (
+                    <span className="text-muted-foreground">Select parties...</span>
+                  ) : (
+                    selectedParties.map((party) => (
+                      <Badge key={party} variant="secondary" className="text-xs">
+                        {party}
+                      </Badge>
+                    ))
+                  )}
+                </div>
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[300px] p-0 z-50" align="start">
+              <Command>
+                <CommandInput placeholder="Search parties..." />
+                <CommandList>
+                  <CommandEmpty>No party found.</CommandEmpty>
+                  <CommandGroup>
+                    {parties.map((party) => (
+                      <CommandItem
+                        key={party}
+                        value={party}
+                        onSelect={() => toggleParty(party)}
+                        className="cursor-pointer"
+                      >
+                        <Check
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            selectedParties.includes(party) ? 'opacity-100' : 'opacity-0'
+                          )}
+                        />
+                        {party}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+              {selectedParties.length > 0 && (
+                <div className="p-2 border-t">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearParties}
+                    className="w-full"
+                  >
+                    Clear all
+                  </Button>
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
         </div>
 
-        <div className="flex-1 min-w-[200px]">
+        <div className="flex-1 min-w-[250px]">
           <label className="text-sm font-medium mb-2 block">Vote Type</label>
-          <Select value={selectedVote} onValueChange={(v) => onVoteChange(v as VoteType | 'all')}>
-            <SelectTrigger>
-              <SelectValue placeholder="Filter by vote" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Votes</SelectItem>
-              <SelectItem value="agree">Agree</SelectItem>
-              <SelectItem value="disagree">Disagree</SelectItem>
-              <SelectItem value="abstain">Abstain</SelectItem>
-            </SelectContent>
-          </Select>
+          <Popover open={voteOpen} onOpenChange={setVoteOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={voteOpen}
+                className="w-full justify-between h-auto min-h-[40px]"
+              >
+                <div className="flex flex-wrap gap-1 flex-1">
+                  {selectedVotes.length === 0 ? (
+                    <span className="text-muted-foreground">Select vote types...</span>
+                  ) : (
+                    selectedVotes.map((vote) => (
+                      <Badge key={vote} variant="secondary" className="text-xs capitalize">
+                        {vote}
+                      </Badge>
+                    ))
+                  )}
+                </div>
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[250px] p-0 z-50" align="start">
+              <Command>
+                <CommandList>
+                  <CommandGroup>
+                    {voteOptions.map((option) => (
+                      <CommandItem
+                        key={option.value}
+                        value={option.value}
+                        onSelect={() => toggleVote(option.value)}
+                        className="cursor-pointer"
+                      >
+                        <Check
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            selectedVotes.includes(option.value) ? 'opacity-100' : 'opacity-0'
+                          )}
+                        />
+                        {option.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+              {selectedVotes.length > 0 && (
+                <div className="p-2 border-t">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearVotes}
+                    className="w-full"
+                  >
+                    Clear all
+                  </Button>
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div>

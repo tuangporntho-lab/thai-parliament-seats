@@ -97,32 +97,32 @@ const ParliamentVisualization = ({
   const calculateSemicirclePosition = (index: number, total: number) => {
     const rows = 12; // จำนวนแถวทั้งหมด (วงใน = 0, วงนอก = 11)
     const seatsPerColumn = rows; // แต่ละแกนมี 12 ที่นั่ง (จากวงในไปวงนอก)
-    
+
     // หาว่าที่นั่งนี้อยู่แกนไหนและวงไหน
     const columnIndex = Math.floor(index / seatsPerColumn);
     const rowIndex = index % seatsPerColumn; // 0 = วงในสุด, 11 = วงนอกสุด
-    
+
     // คำนวณจำนวนแกนทั้งหมด
     const totalColumns = Math.ceil(total / seatsPerColumn);
-    
+
     // คำนวณมุมของแต่ละแกน (เริ่มจากซ้าย 180° ไปขวา 0°)
     const startAngle = Math.PI; // 180° (ซ้ายสุด)
     const endAngle = 0; // 0° (ขวาสุด)
     const angleStep = (startAngle - endAngle) / (totalColumns > 1 ? totalColumns - 1 : 1);
     const angle = startAngle - angleStep * columnIndex;
-    
+
     // คำนวณรัศมีตามวง (วงใน -> วงนอก)
-    const baseRadius = 20;
+    const baseRadius = 22;
     const radiusIncrement = 2.3;
     const radius = baseRadius + rowIndex * radiusIncrement;
-    
+
     // คำนวณตำแหน่ง x, y
     const centerX = 50;
     const centerY = 50;
-    
+
     const x = centerX + Math.cos(angle) * radius;
     const y = centerY - Math.sin(angle) * radius;
-    
+
     return { x: `${x}%`, y: `${y}%`, row: rowIndex };
   };
 

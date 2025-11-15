@@ -10,7 +10,6 @@ import FilterControls from "@/components/FilterControls";
 import VotingSummary from "@/components/VotingSummary";
 import VoteBarChart from "@/components/VoteBarChart";
 import VoterSearch from "@/components/VoterSearch";
-import PartyLegend from "@/components/PartyLegend";
 import { Building2 } from "lucide-react";
 
 const Index = () => {
@@ -139,10 +138,8 @@ const Index = () => {
                   />
                 </div>
 
-                {/* 10% - Party Legend & Explanation */}
-                <div className="flex-[0.1] space-y-2 overflow-auto">
-                  <PartyLegend mps={currentMPs} />
-
+                {/* 10% - Explanation */}
+                <div className="flex-[0.1] overflow-auto">
                   <div className="text-center text-sm text-muted-foreground space-y-2">
                     <p>คลิกที่จุดเพื่อดูประวัติการโหวตของ MP • สีของจุดแสดงพรรคการเมือง • ไอคอนแสดงการโหวต</p>
                     <div className="flex items-center justify-center gap-6">

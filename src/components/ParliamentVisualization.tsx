@@ -140,7 +140,7 @@ const ParliamentVisualization = ({
 
     // คำนวณตำแหน่ง x, y
     const centerX = 50;
-    const centerY = 55;
+    const centerY = 50;
 
     const x = centerX + Math.cos(angle) * radius;
     const y = centerY - Math.sin(angle) * radius;

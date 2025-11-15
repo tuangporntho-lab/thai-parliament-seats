@@ -44,7 +44,7 @@ const PartyVoteBreakdown = ({ mps }: PartyVoteBreakdownProps) => {
       .sort((a, b) => b.total - a.total);
   }, [mps]);
 
-  const maxTotal = Math.max(...partyStats.map((s) => s.total));
+  
 
   return (
     <Card className="h-full flex flex-col">
@@ -64,47 +64,53 @@ const PartyVoteBreakdown = ({ mps }: PartyVoteBreakdownProps) => {
                 <span className="text-xs text-muted-foreground">{stat.total} ที่นั่ง</span>
               </div>
 
-              <div className="space-y-1.5">
-                {/* Agree votes */}
-                <div className="flex items-center gap-2">
-                  <div className="w-16 text-xs text-muted-foreground flex-shrink-0">เห็นด้วย</div>
-                  <div className="flex-1 h-6 bg-muted rounded-sm overflow-hidden relative">
-                    <div
-                      className="h-full bg-success transition-all duration-300"
-                      style={{ width: `${(stat.agree / maxTotal) * 100}%` }}
-                    />
-                    <div className="absolute inset-0 flex items-center justify-end pr-2">
-                      <span className="text-xs font-medium">{stat.agree}</span>
-                    </div>
+              {/* Stacked bar chart */}
+              <div className="h-8 bg-muted rounded-sm overflow-hidden flex">
+                {stat.agree > 0 && (
+                  <div
+                    className="bg-success transition-all duration-300 flex items-center justify-center relative group"
+                    style={{ width: `${(stat.agree / stat.total) * 100}%` }}
+                  >
+                    {(stat.agree / stat.total) * 100 > 8 && (
+                      <span className="text-xs font-medium text-success-foreground">{stat.agree}</span>
+                    )}
                   </div>
+                )}
+                {stat.disagree > 0 && (
+                  <div
+                    className="bg-destructive transition-all duration-300 flex items-center justify-center relative group"
+                    style={{ width: `${(stat.disagree / stat.total) * 100}%` }}
+                  >
+                    {(stat.disagree / stat.total) * 100 > 8 && (
+                      <span className="text-xs font-medium text-destructive-foreground">{stat.disagree}</span>
+                    )}
+                  </div>
+                )}
+                {stat.abstain > 0 && (
+                  <div
+                    className="bg-abstain transition-all duration-300 flex items-center justify-center relative group"
+                    style={{ width: `${(stat.abstain / stat.total) * 100}%` }}
+                  >
+                    {(stat.abstain / stat.total) * 100 > 8 && (
+                      <span className="text-xs font-medium text-abstain-foreground">{stat.abstain}</span>
+                    )}
+                  </div>
+                )}
+              </div>
+              
+              {/* Legend */}
+              <div className="flex gap-3 text-xs">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-sm bg-success" />
+                  <span className="text-muted-foreground">เห็นด้วย {stat.agree}</span>
                 </div>
-
-                {/* Disagree votes */}
-                <div className="flex items-center gap-2">
-                  <div className="w-16 text-xs text-muted-foreground flex-shrink-0">ไม่เห็นด้วย</div>
-                  <div className="flex-1 h-6 bg-muted rounded-sm overflow-hidden relative">
-                    <div
-                      className="h-full bg-destructive transition-all duration-300"
-                      style={{ width: `${(stat.disagree / maxTotal) * 100}%` }}
-                    />
-                    <div className="absolute inset-0 flex items-center justify-end pr-2">
-                      <span className="text-xs font-medium">{stat.disagree}</span>
-                    </div>
-                  </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-sm bg-destructive" />
+                  <span className="text-muted-foreground">ไม่เห็นด้วย {stat.disagree}</span>
                 </div>
-
-                {/* Abstain votes */}
-                <div className="flex items-center gap-2">
-                  <div className="w-16 text-xs text-muted-foreground flex-shrink-0">งดออกเสียง</div>
-                  <div className="flex-1 h-6 bg-muted rounded-sm overflow-hidden relative">
-                    <div
-                      className="h-full bg-abstain transition-all duration-300"
-                      style={{ width: `${(stat.abstain / maxTotal) * 100}%` }}
-                    />
-                    <div className="absolute inset-0 flex items-center justify-end pr-2">
-                      <span className="text-xs font-medium">{stat.abstain}</span>
-                    </div>
-                  </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-sm bg-abstain" />
+                  <span className="text-muted-foreground">งดออกเสียง {stat.abstain}</span>
                 </div>
               </div>
             </div>

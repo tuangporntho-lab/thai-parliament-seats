@@ -28,10 +28,10 @@ const ParliamentVisualization = ({
   const filteredMPs = mps.filter((mp) => {
     const parties = Array.isArray(filterParty) ? filterParty : filterParty ? [filterParty] : [];
     const votes = Array.isArray(filterVote) ? filterVote : filterVote ? [filterVote] : [];
-    
+
     const partyMatch = parties.length === 0 || parties.includes(mp.party);
     const voteMatch = votes.length === 0 || votes.includes(mp.vote);
-    
+
     return partyMatch && voteMatch;
   });
 
@@ -140,7 +140,7 @@ const ParliamentVisualization = ({
 
     // คำนวณตำแหน่ง x, y
     const centerX = 50;
-    const centerY = 65;
+    const centerY = 50;
 
     const x = centerX + Math.cos(angle) * radius;
     const y = centerY - Math.sin(angle) * radius;
@@ -161,7 +161,10 @@ const ParliamentVisualization = ({
       <TooltipProvider key={mp.id}>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className={cn("relative inline-block", layout === "semicircle" && "absolute")} style={layout === "semicircle" ? { left: position.x, top: position.y } : undefined}>
+            <div
+              className={cn("relative inline-block", layout === "semicircle" && "absolute")}
+              style={layout === "semicircle" ? { left: position.x, top: position.y } : undefined}
+            >
               {isHighlighted && (
                 <div
                   className="absolute inset-0 rounded-full animate-pulse pointer-events-none"
@@ -186,11 +189,7 @@ const ParliamentVisualization = ({
                   (hoveredMP === mp.id || isHighlighted) && "scale-[1.8] ring-4 ring-primary z-20 shadow-lg",
                   !isFiltered && !isHighlighted && "opacity-20",
                 )}
-                style={
-                  layout === "semicircle"
-                    ? { backgroundColor: partyColorValue }
-                    : undefined
-                }
+                style={layout === "semicircle" ? { backgroundColor: partyColorValue } : undefined}
               >
                 {getVoteIcon(mp.vote)}
               </button>

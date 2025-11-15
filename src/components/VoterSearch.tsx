@@ -10,15 +10,15 @@ import { z } from 'zod';
 
 interface VoterSearchProps {
   mps: MP[];
-  selectedMP: MP | null;
-  onMPSelect: (mp: MP | null) => void;
+  selectedMPs: MP[];
+  onMPsChange: (mps: MP[]) => void;
 }
 
 const searchSchema = z.object({
   query: z.string().trim().max(100, { message: "Search query too long" }),
 });
 
-const VoterSearch = ({ mps, selectedMP, onMPSelect }: VoterSearchProps) => {
+const VoterSearch = ({ mps, selectedMPs, onMPsChange }: VoterSearchProps) => {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
 
@@ -32,13 +32,20 @@ const VoterSearch = ({ mps, selectedMP, onMPSelect }: VoterSearchProps) => {
     }
   };
 
-  const handleSelect = (mp: MP) => {
-    onMPSelect(mp);
-    setOpen(false);
+  const toggleMP = (mp: MP) => {
+    if (selectedMPs.some((m) => m.id === mp.id)) {
+      onMPsChange(selectedMPs.filter((m) => m.id !== mp.id));
+    } else {
+      onMPsChange([...selectedMPs, mp]);
+    }
   };
 
-  const handleClear = () => {
-    onMPSelect(null);
+  const removeMP = (mpId: string) => {
+    onMPsChange(selectedMPs.filter((m) => m.id !== mpId));
+  };
+
+  const handleClearAll = () => {
+    onMPsChange([]);
     setSearchValue('');
   };
 
@@ -50,75 +57,90 @@ const VoterSearch = ({ mps, selectedMP, onMPSelect }: VoterSearchProps) => {
 
   return (
     <Card className="p-4">
-      <div className="flex items-center gap-2">
-        <div className="flex-1">
-          <label className="text-sm font-medium mb-2 block">ค้นหา Voter</label>
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={open}
-                className="w-full justify-between"
-              >
-                {selectedMP ? (
-                  <span className="truncate">
-                    {selectedMP.name} - {selectedMP.party}
-                  </span>
-                ) : (
+      <div className="space-y-2">
+        <label className="text-sm font-medium block">ค้นหา Voter</label>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-full justify-between h-auto min-h-[40px]"
+            >
+              <div className="flex flex-wrap gap-1 flex-1">
+                {selectedMPs.length === 0 ? (
                   <span className="text-muted-foreground">พิมพ์ชื่อ voter...</span>
-                )}
-                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[400px] p-0 z-50" align="start">
-              <Command>
-                <CommandInput 
-                  placeholder="ค้นหาด้วยชื่อ, พรรค หรือเขต..." 
-                  value={searchValue}
-                  onValueChange={handleSearch}
-                />
-                <CommandList>
-                  <CommandEmpty>ไม่พบข้อมูล voter</CommandEmpty>
-                  <CommandGroup>
-                    {filteredMPs.slice(0, 50).map((mp) => (
-                      <CommandItem
-                        key={mp.id}
-                        value={mp.id}
-                        onSelect={() => handleSelect(mp)}
-                        className="cursor-pointer"
+                ) : (
+                  selectedMPs.map((mp) => (
+                    <div
+                      key={mp.id}
+                      className="flex items-center gap-1 bg-secondary text-secondary-foreground px-2 py-0.5 rounded-md text-xs"
+                    >
+                      <span className="truncate max-w-[150px]">{mp.name}</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeMP(mp.id);
+                        }}
+                        className="hover:bg-secondary-foreground/20 rounded-full p-0.5"
                       >
-                        <Check
-                          className={cn(
-                            'mr-2 h-4 w-4',
-                            selectedMP?.id === mp.id ? 'opacity-100' : 'opacity-0'
-                          )}
-                        />
-                        <div className="flex flex-col">
-                          <span className="font-medium">{mp.name}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {mp.party} • {mp.constituency}
-                          </span>
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </div>
-        {selectedMP && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleClear}
-            className="mt-7 shrink-0"
-            title="ล้างการเลือก"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        )}
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[400px] p-0 z-50" align="start">
+            <Command>
+              <CommandInput 
+                placeholder="ค้นหาด้วยชื่อ, พรรค หรือเขต..." 
+                value={searchValue}
+                onValueChange={handleSearch}
+              />
+              <CommandList>
+                <CommandEmpty>ไม่พบข้อมูล voter</CommandEmpty>
+                <CommandGroup>
+                  {filteredMPs.slice(0, 50).map((mp) => (
+                    <CommandItem
+                      key={mp.id}
+                      value={mp.id}
+                      onSelect={() => toggleMP(mp)}
+                      className="cursor-pointer"
+                    >
+                      <Check
+                        className={cn(
+                          'mr-2 h-4 w-4',
+                          selectedMPs.some((m) => m.id === mp.id) ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                      <div className="flex flex-col">
+                        <span className="font-medium">{mp.name}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {mp.party} • {mp.constituency}
+                        </span>
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+            {selectedMPs.length > 0 && (
+              <div className="p-2 border-t">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleClearAll}
+                  className="w-full"
+                >
+                  Clear all ({selectedMPs.length})
+                </Button>
+              </div>
+            )}
+          </PopoverContent>
+        </Popover>
       </div>
     </Card>
   );

@@ -8,8 +8,8 @@ interface ParliamentVisualizationProps {
   mps: MP[];
   layout: LayoutType;
   onMPClick: (mp: MP) => void;
-  filterParty?: string;
-  filterVote?: VoteType | "all";
+  filterParty?: string | string[];
+  filterVote?: VoteType | VoteType[];
   highlightedMPId?: string | null;
 }
 
@@ -24,8 +24,12 @@ const ParliamentVisualization = ({
   const [hoveredMP, setHoveredMP] = useState<string | null>(null);
 
   const filteredMPs = mps.filter((mp) => {
-    const partyMatch = !filterParty || filterParty === "all" || mp.party === filterParty;
-    const voteMatch = !filterVote || filterVote === "all" || mp.vote === filterVote;
+    const parties = Array.isArray(filterParty) ? filterParty : filterParty ? [filterParty] : [];
+    const votes = Array.isArray(filterVote) ? filterVote : filterVote ? [filterVote] : [];
+    
+    const partyMatch = parties.length === 0 || parties.includes(mp.party);
+    const voteMatch = votes.length === 0 || votes.includes(mp.vote);
+    
     return partyMatch && voteMatch;
   });
 

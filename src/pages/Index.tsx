@@ -15,8 +15,9 @@ import { Building2 } from "lucide-react";
 
 const Index = () => {
   const [selectedMP, setSelectedMP] = useState<MP | null>(null);
-  const [selectedParty, setSelectedParty] = useState<string>("all");
-  const [selectedVote, setSelectedVote] = useState<VoteType | "all">("all");
+  const [selectedParties, setSelectedParties] = useState<string[]>([]);
+  const [selectedVotes, setSelectedVotes] = useState<VoteType[]>([]);
+  const [selectedMPsForSearch, setSelectedMPsForSearch] = useState<MP[]>([]);
   const [layout, setLayout] = useState<LayoutType>("semicircle");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<string>(mockSessions[0].id);
@@ -28,21 +29,19 @@ const Index = () => {
 
   const parties = Array.from(new Set(currentMPs.map((mp) => mp.party)));
 
-  // Filter MPs for vote distribution based on selected party
+  // Filter MPs for vote distribution based on selected parties
   const filteredMPsForChart = useMemo(() => {
-    if (selectedParty === "all") return currentMPs;
-    return currentMPs.filter((mp) => mp.party === selectedParty);
-  }, [currentMPs, selectedParty]);
+    if (selectedParties.length === 0) return currentMPs;
+    return currentMPs.filter((mp) => selectedParties.includes(mp.party));
+  }, [currentMPs, selectedParties]);
 
   // Sync vote filter from chart with main vote filter
-  const effectiveVoteFilter = (voteFilterFromChart || selectedVote) as VoteType | "all";
-
   const handleVoteFilterFromChart = (voteType: string | null) => {
     setVoteFilterFromChart(voteType);
     if (voteType) {
-      setSelectedVote(voteType as VoteType | "all");
+      setSelectedVotes([voteType as VoteType]);
     } else {
-      setSelectedVote("all");
+      setSelectedVotes([]);
     }
   };
 
@@ -105,15 +104,15 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <FilterControls
             parties={parties}
-            selectedParty={selectedParty}
-            selectedVote={selectedVote}
+            selectedParties={selectedParties}
+            selectedVotes={selectedVotes}
             layout={layout}
-            onPartyChange={setSelectedParty}
-            onVoteChange={setSelectedVote}
+            onPartiesChange={setSelectedParties}
+            onVotesChange={setSelectedVotes}
             onLayoutChange={setLayout}
           />
 
-          <VoterSearch mps={currentMPs} selectedMP={highlightedMP} onMPSelect={setHighlightedMP} />
+          <VoterSearch mps={currentMPs} selectedMPs={selectedMPsForSearch} onMPsChange={setSelectedMPsForSearch} />
         </div>
 
         <div className="bg-card rounded-lg border shadow-sm h-[550px] overflow-hidden">
@@ -121,9 +120,9 @@ const Index = () => {
             mps={currentMPs}
             layout={layout}
             onMPClick={handleMPClick}
-            filterParty={selectedParty}
-            filterVote={effectiveVoteFilter}
-            highlightedMPId={highlightedMP?.id}
+            filterParty={selectedParties}
+            filterVote={selectedVotes}
+            highlightedMPId={highlightedMP?.id || (selectedMPsForSearch.length > 0 ? selectedMPsForSearch[0].id : undefined)}
           />
         </div>
 

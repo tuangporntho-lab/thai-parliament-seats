@@ -11,6 +11,7 @@ interface ParliamentVisualizationProps {
   filterParty?: string | string[];
   filterVote?: VoteType | VoteType[];
   highlightedMPId?: string | null;
+  highlightedMPIds?: string[];
 }
 
 const ParliamentVisualization = ({
@@ -20,6 +21,7 @@ const ParliamentVisualization = ({
   filterParty,
   filterVote,
   highlightedMPId,
+  highlightedMPIds = [],
 }: ParliamentVisualizationProps) => {
   const [hoveredMP, setHoveredMP] = useState<string | null>(null);
 
@@ -148,7 +150,7 @@ const ParliamentVisualization = ({
 
   const renderSeat = (mp: MP, index: number) => {
     const isFiltered = filteredMPs.some((m) => m.id === mp.id);
-    const isHighlighted = highlightedMPId === mp.id;
+    const isHighlighted = highlightedMPId === mp.id || highlightedMPIds.includes(mp.id);
     const position =
       layout === "semicircle" ? calculateSemicirclePosition(index, sortedMPs.length) : { x: "0%", y: "0%", row: 0 };
 
@@ -159,27 +161,40 @@ const ParliamentVisualization = ({
       <TooltipProvider key={mp.id}>
         <Tooltip>
           <TooltipTrigger asChild>
-            <button
-              onClick={() => onMPClick(mp)}
-              onMouseEnter={() => setHoveredMP(mp.id)}
-              onMouseLeave={() => setHoveredMP(null)}
-              className={cn(
-                "w-[16px] h-[16px] rounded-full transition-all duration-300 flex items-center justify-center",
-                "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1",
-                layout === "grid" && partyColor,
-                (hoveredMP === mp.id || isHighlighted) && "scale-[1.8] ring-4 ring-primary z-20 shadow-lg",
-                !isFiltered && !isHighlighted && "opacity-20",
-                isHighlighted && "animate-pulse",
-                layout === "semicircle" && "absolute",
+            <div className={cn("relative inline-block", layout === "semicircle" && "absolute")} style={layout === "semicircle" ? { left: position.x, top: position.y } : undefined}>
+              {isHighlighted && (
+                <div
+                  className="absolute inset-0 rounded-full animate-pulse pointer-events-none"
+                  style={{
+                    width: "26px",
+                    height: "26px",
+                    marginLeft: "-5px",
+                    marginTop: "-5px",
+                    border: "3px solid hsl(var(--primary))",
+                    boxShadow: "0 0 15px hsl(var(--primary) / 0.6)",
+                  }}
+                />
               )}
-              style={
-                layout === "semicircle"
-                  ? { left: position.x, top: position.y, backgroundColor: partyColorValue }
-                  : undefined
-              }
-            >
-              {getVoteIcon(mp.vote)}
-            </button>
+              <button
+                onClick={() => onMPClick(mp)}
+                onMouseEnter={() => setHoveredMP(mp.id)}
+                onMouseLeave={() => setHoveredMP(null)}
+                className={cn(
+                  "w-[16px] h-[16px] rounded-full transition-all duration-300 flex items-center justify-center relative",
+                  "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1",
+                  layout === "grid" && partyColor,
+                  (hoveredMP === mp.id || isHighlighted) && "scale-[1.8] ring-4 ring-primary z-20 shadow-lg",
+                  !isFiltered && !isHighlighted && "opacity-20",
+                )}
+                style={
+                  layout === "semicircle"
+                    ? { backgroundColor: partyColorValue }
+                    : undefined
+                }
+              >
+                {getVoteIcon(mp.vote)}
+              </button>
+            </div>
           </TooltipTrigger>
           <TooltipContent side="top" className="max-w-xs">
             <div className="space-y-1">

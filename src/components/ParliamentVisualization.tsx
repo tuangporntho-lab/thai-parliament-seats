@@ -127,7 +127,7 @@ const ParliamentVisualization = ({
 
     // คำนวณรัศมีแต่ละแถว
     const baseRadius = 20;
-    const radiusIncrement = 3;
+    const radiusIncrement = 2;
     const radius = baseRadius + currentRow * radiusIncrement;
 
     // มุมเริ่มต้นและมุมสิ้นสุด

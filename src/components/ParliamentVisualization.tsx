@@ -112,7 +112,7 @@ const ParliamentVisualization = ({
     const angle = startAngle - angleStep * columnIndex;
 
     // คำนวณรัศมีตามวง (วงใน -> วงนอก)
-    const baseRadius = 22;
+    const baseRadius = 30;
     const radiusIncrement = 2.3;
     const radius = baseRadius + rowIndex * radiusIncrement;
 

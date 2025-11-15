@@ -47,6 +47,14 @@ export default {
           DEFAULT: "hsl(var(--abstain))",
           foreground: "hsl(var(--abstain-foreground))",
         },
+        "no-vote": {
+          DEFAULT: "hsl(var(--no-vote))",
+          foreground: "hsl(var(--no-vote-foreground))",
+        },
+        absent: {
+          DEFAULT: "hsl(var(--absent))",
+          foreground: "hsl(var(--absent-foreground))",
+        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",

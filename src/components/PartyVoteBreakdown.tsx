@@ -26,17 +26,19 @@ const PartyVoteBreakdown = ({ mps }: PartyVoteBreakdownProps) => {
   };
 
   const partyStats = useMemo(() => {
-    const stats = new Map<string, { agree: number; disagree: number; abstain: number; total: number }>();
+    const stats = new Map<string, { agree: number; disagree: number; abstain: number; noVote: number; absent: number; total: number }>();
 
     mps.forEach((mp) => {
       if (!stats.has(mp.party)) {
-        stats.set(mp.party, { agree: 0, disagree: 0, abstain: 0, total: 0 });
+        stats.set(mp.party, { agree: 0, disagree: 0, abstain: 0, noVote: 0, absent: 0, total: 0 });
       }
       const partyStat = stats.get(mp.party)!;
       partyStat.total++;
       if (mp.vote === "agree") partyStat.agree++;
       else if (mp.vote === "disagree") partyStat.disagree++;
       else if (mp.vote === "abstain") partyStat.abstain++;
+      else if (mp.vote === "no-vote") partyStat.noVote++;
+      else if (mp.vote === "absent") partyStat.absent++;
     });
 
     return Array.from(stats.entries())
@@ -53,18 +55,26 @@ const PartyVoteBreakdown = ({ mps }: PartyVoteBreakdownProps) => {
         <p className="text-xs text-muted-foreground mt-1">รายละเอียดการโหวตของแต่ละพรรคการเมือง</p>
         
         {/* Legend - แสดงครั้งเดียวด้านบน */}
-        <div className="flex gap-3 text-xs mt-3">
+        <div className="flex gap-3 text-xs mt-3 flex-wrap">
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 rounded-sm bg-success" />
             <span className="text-muted-foreground">เห็นด้วย</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-2 h-2 rounded-sm bg-destructive border-[0.5px] border-border" />
+            <div className="w-2 h-2 rounded-sm bg-destructive border border-border" />
             <span className="text-muted-foreground">ไม่เห็นด้วย</span>
           </div>
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 rounded-sm bg-abstain" />
             <span className="text-muted-foreground">งดออกเสียง</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-sm bg-no-vote" />
+            <span className="text-muted-foreground">ไม่ลงคะแนน</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-sm bg-absent" />
+            <span className="text-muted-foreground">ลา/ขาด</span>
           </div>
         </div>
       </div>
@@ -84,7 +94,7 @@ const PartyVoteBreakdown = ({ mps }: PartyVoteBreakdownProps) => {
               <div className="h-5 bg-muted rounded-sm overflow-hidden flex">
                 {stat.agree > 0 && (
                   <div
-                    className="bg-success transition-all duration-300 flex items-center justify-center relative group border-[0.5px] border-border"
+                    className="bg-success transition-all duration-300 flex items-center justify-center relative group border border-border"
                     style={{ width: `${(stat.agree / stat.total) * 100}%` }}
                   >
                     {(stat.agree / stat.total) * 100 > 8 && (
@@ -94,7 +104,7 @@ const PartyVoteBreakdown = ({ mps }: PartyVoteBreakdownProps) => {
                 )}
                 {stat.disagree > 0 && (
                   <div
-                    className="bg-destructive transition-all duration-300 flex items-center justify-center relative group border-[0.5px] border-border"
+                    className="bg-destructive transition-all duration-300 flex items-center justify-center relative group border border-border"
                     style={{ width: `${(stat.disagree / stat.total) * 100}%` }}
                   >
                     {(stat.disagree / stat.total) * 100 > 8 && (
@@ -104,11 +114,31 @@ const PartyVoteBreakdown = ({ mps }: PartyVoteBreakdownProps) => {
                 )}
                 {stat.abstain > 0 && (
                   <div
-                    className="bg-abstain transition-all duration-300 flex items-center justify-center relative group border-[0.5px] border-border"
+                    className="bg-abstain transition-all duration-300 flex items-center justify-center relative group border border-border"
                     style={{ width: `${(stat.abstain / stat.total) * 100}%` }}
                   >
                     {(stat.abstain / stat.total) * 100 > 8 && (
                       <span className="text-xs font-medium text-abstain-foreground">{stat.abstain}</span>
+                    )}
+                  </div>
+                )}
+                {stat.noVote > 0 && (
+                  <div
+                    className="bg-no-vote transition-all duration-300 flex items-center justify-center relative group border border-border"
+                    style={{ width: `${(stat.noVote / stat.total) * 100}%` }}
+                  >
+                    {(stat.noVote / stat.total) * 100 > 8 && (
+                      <span className="text-xs font-medium text-no-vote-foreground">{stat.noVote}</span>
+                    )}
+                  </div>
+                )}
+                {stat.absent > 0 && (
+                  <div
+                    className="bg-absent transition-all duration-300 flex items-center justify-center relative group border border-border"
+                    style={{ width: `${(stat.absent / stat.total) * 100}%` }}
+                  >
+                    {(stat.absent / stat.total) * 100 > 8 && (
+                      <span className="text-xs font-medium text-absent-foreground">{stat.absent}</span>
                     )}
                   </div>
                 )}

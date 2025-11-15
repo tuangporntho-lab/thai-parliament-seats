@@ -1,4 +1,4 @@
-export type VoteType = 'agree' | 'disagree' | 'abstain';
+export type VoteType = 'agree' | 'disagree' | 'abstain' | 'no-vote' | 'absent';
 
 export interface MP {
   id: string;

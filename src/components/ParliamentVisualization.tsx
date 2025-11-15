@@ -2,7 +2,7 @@ import { useState } from "react";
 import { MP, LayoutType, VoteType } from "@/types/parliament";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Check, X, Minus } from "lucide-react";
+import { Check, X, Minus, Ban, UserX } from "lucide-react";
 
 interface ParliamentVisualizationProps {
   mps: MP[];
@@ -41,7 +41,7 @@ const ParliamentVisualization = ({
     const partyCompare = a.party.localeCompare(b.party);
     if (partyCompare !== 0) return partyCompare;
     // Then by vote type
-    const voteOrder = { agree: 0, disagree: 1, abstain: 2 };
+    const voteOrder = { agree: 0, disagree: 1, abstain: 2, "no-vote": 3, absent: 4 };
     return voteOrder[a.vote] - voteOrder[b.vote];
   });
 
@@ -87,6 +87,10 @@ const ParliamentVisualization = ({
         return <X className="w-3 h-3 text-white" />;
       case "abstain":
         return <Minus className="w-3 h-3 text-white" />;
+      case "no-vote":
+        return <Ban className="w-3 h-3 text-white" />;
+      case "absent":
+        return <UserX className="w-3 h-3 text-white" />;
     }
   };
 

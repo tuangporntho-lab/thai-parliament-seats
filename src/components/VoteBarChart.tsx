@@ -1,7 +1,7 @@
 import { MP } from "@/types/parliament";
 import { Card } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Check, X, Minus } from "lucide-react";
+import { Check, X, Minus, Ban, UserX } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface VoteBarChartProps {
@@ -16,10 +16,14 @@ const VoteBarChart = ({ mps, orientation = "horizontal", selectedVoteFilter, onV
   const agreeCount = mps.filter((mp) => mp.vote === "agree").length;
   const disagreeCount = mps.filter((mp) => mp.vote === "disagree").length;
   const abstainCount = mps.filter((mp) => mp.vote === "abstain").length;
+  const noVoteCount = mps.filter((mp) => mp.vote === "no-vote").length;
+  const absentCount = mps.filter((mp) => mp.vote === "absent").length;
 
   const agreePercent = (agreeCount / total) * 100;
   const disagreePercent = (disagreeCount / total) * 100;
   const abstainPercent = (abstainCount / total) * 100;
+  const noVotePercent = (noVoteCount / total) * 100;
+  const absentPercent = (absentCount / total) * 100;
 
   const isHorizontal = orientation === "horizontal";
 
@@ -41,7 +45,11 @@ const VoteBarChart = ({ mps, orientation = "horizontal", selectedVoteFilter, onV
               ? "เห็นด้วย"
               : selectedVoteFilter === "disagree"
                 ? "ไม่เห็นด้วย"
-                : "งดออกเสียง"}
+                : selectedVoteFilter === "abstain"
+                  ? "งดออกเสียง"
+                  : selectedVoteFilter === "no-vote"
+                    ? "ไม่ลงคะแนนเสียง"
+                    : "ลา/ขาดลงมติ"}
             )
           </span>
         )}
@@ -54,7 +62,7 @@ const VoteBarChart = ({ mps, orientation = "horizontal", selectedVoteFilter, onV
             <TooltipTrigger asChild>
               <div
                 className={cn(
-                  "bg-success hover:opacity-80 transition-all cursor-pointer flex items-center justify-center border-[0.5px] border-border",
+                  "bg-success hover:opacity-80 transition-all cursor-pointer flex items-center justify-center border border-border",
                   selectedVoteFilter === "agree" && "ring-4 ring-primary",
                 )}
                 style={{
@@ -89,7 +97,7 @@ const VoteBarChart = ({ mps, orientation = "horizontal", selectedVoteFilter, onV
             <TooltipTrigger asChild>
               <div
                 className={cn(
-                  "bg-destructive hover:opacity-80 transition-all cursor-pointer flex items-center justify-center border-[0.5px] border-border",
+                  "bg-destructive hover:opacity-80 transition-all cursor-pointer flex items-center justify-center border border-border",
                   selectedVoteFilter === "disagree" && "ring-4 ring-primary",
                 )}
                 style={{
@@ -124,7 +132,7 @@ const VoteBarChart = ({ mps, orientation = "horizontal", selectedVoteFilter, onV
             <TooltipTrigger asChild>
               <div
                 className={cn(
-                  "bg-abstain hover:opacity-80 transition-all cursor-pointer flex items-center justify-center border-[0.5px] border-border",
+                  "bg-abstain hover:opacity-80 transition-all cursor-pointer flex items-center justify-center border border-border",
                   selectedVoteFilter === "abstain" && "ring-4 ring-primary",
                 )}
                 style={{
@@ -152,10 +160,80 @@ const VoteBarChart = ({ mps, orientation = "horizontal", selectedVoteFilter, onV
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
+
+        {/* No Vote Section */}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div
+                className={cn(
+                  "bg-no-vote hover:opacity-80 transition-all cursor-pointer flex items-center justify-center border border-border",
+                  selectedVoteFilter === "no-vote" && "ring-4 ring-primary",
+                )}
+                style={{
+                  [isHorizontal ? "width" : "height"]: `${noVotePercent}%`,
+                }}
+                onClick={() => handleVoteClick("no-vote")}
+              >
+                {noVotePercent > 15 && (
+                  <div className="flex items-center gap-2 text-no-vote-foreground">
+                    <Ban className="w-4 h-4" />
+                    <span className="text-sm font-medium">{noVoteCount}</span>
+                  </div>
+                )}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="bg-no-vote text-no-vote-foreground">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Ban className="w-4 h-4" />
+                  <span className="font-semibold">ไม่ลงคะแนนเสียง (No Vote)</span>
+                </div>
+                <p className="text-sm">จำนวน: {noVoteCount} คน</p>
+                <p className="text-sm">สัดส่วน: {noVotePercent.toFixed(1)}%</p>
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        {/* Absent Section */}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div
+                className={cn(
+                  "bg-absent hover:opacity-80 transition-all cursor-pointer flex items-center justify-center border border-border",
+                  selectedVoteFilter === "absent" && "ring-4 ring-primary",
+                )}
+                style={{
+                  [isHorizontal ? "width" : "height"]: `${absentPercent}%`,
+                }}
+                onClick={() => handleVoteClick("absent")}
+              >
+                {absentPercent > 15 && (
+                  <div className="flex items-center gap-2 text-absent-foreground">
+                    <UserX className="w-4 h-4" />
+                    <span className="text-sm font-medium">{absentCount}</span>
+                  </div>
+                )}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="bg-absent text-absent-foreground">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <UserX className="w-4 h-4" />
+                  <span className="font-semibold">ลา/ขาดลงมติ (Absent)</span>
+                </div>
+                <p className="text-sm">จำนวน: {absentCount} คน</p>
+                <p className="text-sm">สัดส่วน: {absentPercent.toFixed(1)}%</p>
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       {/* Legend */}
-      <div className="flex items-center justify-center gap-4 mt-3 text-xs flex-shrink-0">
+      <div className="flex items-center justify-center gap-4 mt-3 text-xs flex-shrink-0 flex-wrap">
         <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-success" />
           <span>เห็นด้วย: {agreeCount}</span>
@@ -167,6 +245,14 @@ const VoteBarChart = ({ mps, orientation = "horizontal", selectedVoteFilter, onV
         <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-abstain" />
           <span>งดออกเสียง: {abstainCount}</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-no-vote" />
+          <span>ไม่ลงคะแนน: {noVoteCount}</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-absent" />
+          <span>ลา/ขาด: {absentCount}</span>
         </div>
       </div>
     </Card>

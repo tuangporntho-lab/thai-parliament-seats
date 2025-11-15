@@ -38,6 +38,12 @@ All colors MUST be HSL.
     --abstain: 215 16% 47%;
     --abstain-foreground: 0 0% 100%;
 
+    --no-vote: 45 93% 47%;
+    --no-vote-foreground: 0 0% 100%;
+
+    --absent: 0 0% 85%;
+    --absent-foreground: 222 47% 11%;
+
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 221 83% 53%;
@@ -103,6 +109,12 @@ All colors MUST be HSL.
 
     --abstain: 215 20% 65%;
     --abstain-foreground: 222 47% 11%;
+
+    --no-vote: 45 93% 47%;
+    --no-vote-foreground: 0 0% 100%;
+
+    --absent: 217 33% 25%;
+    --absent-foreground: 210 40% 98%;
 
     --border: 217 33% 20%;
     --input: 217 33% 20%;

@@ -7,7 +7,6 @@ const mockSessions = [...rawMockSessions].sort((a, b) => new Date(b.date).getTim
 import ParliamentVisualization from "@/components/ParliamentVisualization";
 import MPProfileSidebar from "@/components/MPProfileSidebar";
 import FilterControls from "@/components/FilterControls";
-import VotingSummary from "@/components/VotingSummary";
 import VoteBarChart from "@/components/VoteBarChart";
 import VoterSearch from "@/components/VoterSearch";
 import PartyLegend from "@/components/PartyLegend";
@@ -85,17 +84,6 @@ const Index = () => {
           {/* Left Sidebar */}
           <div className="w-[400px] border-r bg-card overflow-y-auto flex-shrink-0">
             <div className="p-4 space-y-4">
-              <VotingSummary
-                mps={currentMPs}
-                sessions={mockSessions}
-                currentSession={currentSession}
-                onSessionChange={setCurrentSessionId}
-                onPreviousSession={handlePreviousSession}
-                onNextSession={handleNextSession}
-                canGoPrevious={currentSessionIndex > 0}
-                canGoNext={currentSessionIndex < mockSessions.length - 1}
-              />
-
               <div className="space-y-4">
                 <FilterControls
                   parties={parties}

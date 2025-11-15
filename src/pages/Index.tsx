@@ -116,7 +116,8 @@ const Index = () => {
           <div className="flex-1 flex flex-col overflow-hidden">
             <div className="flex-1 p-4 overflow-auto">
               <div className="h-full flex flex-col gap-4">
-                <div className="bg-card rounded-lg border shadow-sm p-4">
+                {/* 20% - Vote Distribution */}
+                <div className="flex-[0.2] bg-card rounded-lg border shadow-sm p-4 overflow-auto">
                   <VoteBarChart
                     mps={filteredMPsForChart}
                     orientation="horizontal"
@@ -125,7 +126,8 @@ const Index = () => {
                   />
                 </div>
 
-                <div className="flex-1 bg-card rounded-lg border shadow-sm overflow-hidden min-h-0">
+                {/* 70% - Parliament Visualization */}
+                <div className="flex-[0.7] bg-card rounded-lg border shadow-sm overflow-hidden">
                   <ParliamentVisualization
                     mps={currentMPs}
                     layout={layout}
@@ -137,28 +139,31 @@ const Index = () => {
                   />
                 </div>
 
-                <PartyLegend mps={currentMPs} />
+                {/* 10% - Party Legend & Explanation */}
+                <div className="flex-[0.1] space-y-2 overflow-auto">
+                  <PartyLegend mps={currentMPs} />
 
-                <div className="text-center text-sm text-muted-foreground space-y-2">
-                  <p>คลิกที่จุดเพื่อดูประวัติการโหวตของ MP • สีของจุดแสดงพรรคการเมือง • ไอคอนแสดงการโหวต</p>
-                  <div className="flex items-center justify-center gap-6">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-success flex items-center justify-center">
-                        <span className="text-[8px] text-white">✓</span>
+                  <div className="text-center text-sm text-muted-foreground space-y-2">
+                    <p>คลิกที่จุดเพื่อดูประวัติการโหวตของ MP • สีของจุดแสดงพรรคการเมือง • ไอคอนแสดงการโหวต</p>
+                    <div className="flex items-center justify-center gap-6">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-success flex items-center justify-center">
+                          <span className="text-[8px] text-white">✓</span>
+                        </div>
+                        <span>เห็นด้วย</span>
                       </div>
-                      <span>เห็นด้วย</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-destructive flex items-center justify-center">
-                        <span className="text-[8px] text-white">✕</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-destructive flex items-center justify-center">
+                          <span className="text-[8px] text-white">✕</span>
+                        </div>
+                        <span>ไม่เห็นด้วย</span>
                       </div>
-                      <span>ไม่เห็นด้วย</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-abstain flex items-center justify-center">
-                        <span className="text-[8px] text-white">−</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-abstain flex items-center justify-center">
+                          <span className="text-[8px] text-white">−</span>
+                        </div>
+                        <span>งดออกเสียง</span>
                       </div>
-                      <span>งดออกเสียง</span>
                     </div>
                   </div>
                 </div>
